@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -26,16 +25,24 @@
     --text: #F3F4F6;
     --text2: #a89cc8;
     --text3: #5a4a7a;
+    --danger: #e85a5a;
     --radius: 14px;
     --tab-h: 72px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html {
-    background: #0D0D12;
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
   }
+
+  html, body {
+    background: var(--bg);
+  }
+
   body {
-    background: #0D0D12;
-    color: #F3F4F6;
+    color: var(--text);
     font-family: 'DM Sans', sans-serif;
     max-width: 430px;
     margin: 0 auto;
@@ -44,369 +51,1057 @@
     flex-direction: column;
     overflow-x: hidden;
   }
-  .page { display: none; flex-direction: column; flex: 1; padding-bottom: var(--tab-h); }
+
+  .page {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: var(--tab-h);
+  }
+
   .page.active { display: flex; }
 
-/* HEADER */
-.header { padding: 18px 20px 8px; }
-.header h1 { font-family: ‘Rajdhani’, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: 0.5px; }
-.header .subtitle { color: var(–text2); font-size: 13px; margin-top: 2px; }
-.date-nav {
-display: flex; align-items: center; justify-content: space-between;
-padding: 10px 20px 14px;
-}
-.date-nav button {
-background: none; border: none; color: var(–text2); font-size: 20px; cursor: pointer; padding: 4px 10px;
-}
-.date-nav span { font-size: 15px; font-weight: 600; color: var(–text); }
+  .header { padding: 18px 20px 8px; }
+  .header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .header .subtitle {
+    color: var(--text2);
+    font-size: 13px;
+    margin-top: 2px;
+  }
 
-/* CARDS */
-.card {
-background: #1A1033;
-border-radius: 14px;
-margin: 0 16px 12px;
-padding: 16px;
-border: 1px solid #3a2a5a;
-}
-.card-header {
-display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-}
-.card-icon {
-width: 36px; height: 36px; border-radius: 10px;
-display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
-}
-.icon-green { background: #1a3a0a; border: 1px solid #2a5a10; }
-.icon-orange { background: #2d1508; border: 1px solid #5a2a10; }
-.icon-teal { background: #1a0a35; border: 1px solid #5A2CA0; }
-.card-title { font-size: 12px; font-weight: 600; letter-spacing: 1.2px; color: #a89cc8; text-transform: uppercase; }
-.card-action { margin-left: auto; color: #7CFF3A; font-size: 13px; font-weight: 600; cursor: pointer; text-shadow: 0 0 8px rgba(124,255,58,0.5); }
+  .page-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 4px;
+  }
 
-/* MACRO RINGS */
-.macro-rings { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 10px; }
-.ring-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-.ring-wrap { position: relative; width: 62px; height: 62px; }
-.ring-svg { width: 62px; height: 62px; transform: rotate(-90deg); }
-.ring-track { fill: none; stroke: #2A2A36; stroke-width: 4; }
-.ring-fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
-.ring-cal .ring-fill { stroke: #7CFF3A; }
-.ring-pro .ring-fill { stroke: #a87cff; }
-.ring-carb .ring-fill { stroke: #FF6A2A; }
-.ring-fat .ring-fill { stroke: #e85a8a; }
-.ring-val {
-position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-font-size: 13px; font-weight: 700; color: #F3F4F6;
-}
-.ring-label { font-size: 10px; color: #a89cc8; letter-spacing: 0.8px; text-transform: uppercase; }
-.kcal-progress { text-align: center; font-size: 12px; color: #5a4a7a; margin-top: 4px; }
-.kcal-progress span { color: #a89cc8; }
+  .page-header-row h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+  }
 
-/* MACRO SUMMARY TILES */
-.macro-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 4px; }
-.macro-tile { background: #211440; border-radius: 10px; padding: 10px 6px; text-align: center; }
-.macro-tile .val { font-size: 18px; font-weight: 700; font-family: ‘Rajdhani’, sans-serif; }
-.macro-tile .lbl { font-size: 9px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 14px;
+  }
 
-/* WEIGHT INPUT */
-.weight-input-row { display: flex; gap: 8px; align-items: center; }
-.weight-input-row input {
-flex: 1; background: #211440; border: 1px solid #3a2a5a;
-border-radius: 10px; padding: 12px 14px; color: #F3F4F6;
-font-size: 15px; font-family: ‘DM Sans’, sans-serif; outline: none;
-}
-.weight-input-row input::placeholder { color: #5a4a7a; }
-.btn-plus {
-width: 44px; height: 44px; background: #7CFF3A; border: none;
-border-radius: 10px; color: #0D0D12; font-size: 22px; font-weight: 700;
-cursor: pointer; display: flex; align-items: center; justify-content: center;
-flex-shrink: 0; box-shadow: 0 0 12px rgba(124,255,58,0.3);
-}
+  .date-nav button {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 10px;
+  }
 
-/* LIFTS CARD */
-.lifts-empty { color: #5a4a7a; font-size: 14px; padding: 4px 0; }
+  .date-nav span {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
 
-/* QUICK ADD */
-.quick-add { display: flex; flex-direction: column; gap: 8px; }
-.quick-add input {
-background: #211440; border: 1px solid #3a2a5a;
-border-radius: 10px; padding: 12px 14px; color: #F3F4F6;
-font-size: 15px; font-family: ‘DM Sans’, sans-serif; outline: none; width: 100%;
-}
-.quick-add input::placeholder { color: #5a4a7a; }
-.macro-inputs { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
-.macro-inputs input {
-background: #211440; border: 1px solid #3a2a5a;
-border-radius: 8px; padding: 9px 6px; color: #F3F4F6;
-font-size: 13px; font-family: ‘DM Sans’, sans-serif; outline: none;
-text-align: center; width: 100%;
-}
-.macro-inputs input::placeholder { color: #5a4a7a; font-size: 12px; }
-.btn-green {
-background: #7CFF3A; color: #0D0D12; border: none; border-radius: 12px;
-padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
-display: flex; align-items: center; justify-content: center; gap: 6px;
-font-family: ‘DM Sans’, sans-serif; width: 100%;
-box-shadow: 0 0 16px rgba(124,255,58,0.25);
-}
-.btn-green:active { opacity: 0.85; }
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    margin: 0 16px 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
 
-/* MEALS LIST */
-.meals-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
-.meal-entry {
-background: #1A1033; border: 1px solid #3a2a5a;
-border-radius: 14px; padding: 12px 14px;
-display: flex; align-items: center; justify-content: space-between;
-}
-.meal-entry .meal-name { font-weight: 600; font-size: 14px; color: #F3F4F6; }
-.meal-entry .meal-macros { font-size: 11px; color: #a89cc8; margin-top: 2px; }
-.meal-entry .meal-kcal { font-family: ‘Rajdhani’, sans-serif; font-size: 20px; font-weight: 700; color: #7CFF3A; }
-.empty-msg { text-align: center; color: #5a4a7a; font-size: 14px; padding: 24px 0; }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
 
-/* SCROLL AREA */
-.scroll-area { flex: 1; overflow-y: auto; padding-bottom: 8px; }
-.scroll-area::-webkit-scrollbar { width: 0; }
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
 
-/* WORKOUT PAGE */
-.section-label { font-size: 11px; color: #5a4a7a; letter-spacing: 1.4px; text-transform: uppercase; padding: 4px 20px 8px; font-weight: 600; }
-.search-bar {
-margin: 0 16px 12px; background: #211440; border: 1px solid #3a2a5a;
-border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px;
-}
-.search-bar input {
-background: none; border: none; outline: none; color: #F3F4F6;
-font-size: 15px; font-family: ‘DM Sans’, sans-serif; flex: 1;
-}
-.search-bar input::placeholder { color: #5a4a7a; }
-.search-icon { color: #5a4a7a; font-size: 15px; }
+  .icon-green { background: #1a3a0a; border: 1px solid #2a5a10; }
+  .icon-orange { background: #2d1508; border: 1px solid #5a2a10; }
+  .icon-teal { background: #1a0a35; border: 1px solid #5A2CA0; }
 
-/* NEW EXERCISE MODAL */
-.exercise-form {
-margin: 0 16px; background: #211440; border: 1px solid #3a2a5a;
-border-radius: 14px; padding: 16px;
-}
-.exercise-form input {
-background: #2A2A36; border: 1px solid #3a2a5a;
-border-radius: 10px; padding: 13px 14px; color: #F3F4F6;
-font-size: 15px; font-family: ‘DM Sans’, sans-serif; outline: none;
-width: 100%; margin-bottom: 12px;
-}
-.exercise-form input::placeholder { color: #5a4a7a; }
-.muscle-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
-.tag {
-padding: 6px 13px; border-radius: 20px; font-size: 11px; font-weight: 700;
-letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer;
-border: 1px solid #3a2a5a; background: #2A2A36; color: #a89cc8;
-transition: all 0.15s;
-}
-.tag.active { background: #7CFF3A; color: #0D0D12; border-color: #7CFF3A; box-shadow: 0 0 8px rgba(124,255,58,0.3); }
-.form-actions { display: flex; gap: 10px; }
-.btn-cancel {
-flex: 1; background: none; border: none; color: #a89cc8;
-font-size: 15px; font-weight: 600; cursor: pointer; padding: 13px;
-font-family: ‘DM Sans’, sans-serif;
-}
-.btn-create {
-flex: 2; background: #7CFF3A; color: #0D0D12; border: none;
-border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700;
-cursor: pointer; font-family: ‘DM Sans’, sans-serif;
-box-shadow: 0 0 10px rgba(124,255,58,0.25);
-}
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    color: var(--text2);
+    text-transform: uppercase;
+  }
 
-/* EXERCISE CARDS */
-.exercise-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-.ex-card {
-background: #1A1033; border: 1px solid #3a2a5a;
-border-radius: 14px; padding: 14px;
-}
-.ex-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.ex-name { font-weight: 700; font-size: 15px; color: #F3F4F6; }
-.ex-tag { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #7CFF3A; font-weight: 700; }
-.sets-table { width: 100%; }
-.sets-table th { font-size: 10px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 0.8px; padding: 0 4px 6px; text-align: center; }
-.sets-table td { padding: 4px; }
-.sets-table input {
-background: #211440; border: 1px solid #3a2a5a;
-border-radius: 7px; padding: 7px 4px; color: #F3F4F6;
-font-size: 14px; font-weight: 600; font-family: ‘Rajdhani’, sans-serif;
-outline: none; text-align: center; width: 100%;
-}
-.set-num { text-align: center; color: #5a4a7a; font-size: 12px; font-weight: 700; }
-.btn-add-set {
-background: #211440; border: 1px dashed #3a2a5a;
-border-radius: 8px; color: #5a4a7a; font-size: 12px; font-weight: 600;
-padding: 8px; cursor: pointer; width: 100%; margin-top: 8px;
-font-family: ‘DM Sans’, sans-serif;
-}
-.btn-add-ex {
-margin: 10px 16px 0; background: #1A1033; border: 1px dashed #3a2a5a;
-border-radius: 14px; color: #a89cc8; font-size: 14px; font-weight: 600;
-padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-gap: 6px; font-family: ‘DM Sans’, sans-serif;
-}
+  .card-action {
+    margin-left: auto;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-shadow: 0 0 8px rgba(124,255,58,0.5);
+  }
 
-/* WEIGHT PAGE */
-.weight-history { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
-.weight-entry {
-background: #1A1033; border: 1px solid #3a2a5a;
-border-radius: 14px; padding: 12px 14px;
-display: flex; align-items: center; justify-content: space-between;
-}
-.weight-entry .we-date { font-size: 13px; color: #a89cc8; }
-.weight-entry .we-val { font-family: ‘Rajdhani’, sans-serif; font-size: 22px; font-weight: 700; color: #7CFF3A; }
-.weight-entry .we-unit { font-size: 12px; color: #5a4a7a; }
-.mini-chart { padding: 0 16px 12px; }
-.mini-chart canvas { width: 100%; height: 100px; }
+  .macro-rings {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
 
-/* BOTTOM NAV */
-.bottom-nav {
-position: fixed; bottom: 0; left: 0; right: 0;
-max-width: 430px; margin: 0 auto;
-background: #12082a;
-border-top: 2px solid #5A2CA0;
-box-shadow: 0 -4px 24px rgba(90,44,160,0.45);
-display: flex; height: 72px; z-index: 100;
-}
-.nav-item {
-flex: 1; display: flex; flex-direction: column; align-items: center;
-justify-content: center; gap: 4px; cursor: pointer; color: #5a4a7a;
-font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-transition: color 0.15s; position: relative;
-}
-.nav-item.active { color: #7CFF3A; }
-.nav-item.active::after {
-content: ‘’; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-width: 32px; height: 2px; background: #7CFF3A;
-box-shadow: 0 0 8px #7CFF3A;
-border-radius: 2px 2px 0 0;
-}
-.nav-icon { font-size: 20px; }
+  .ring-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
 
-/* DELETE BTN */
-.btn-del {
-background: none; border: none; color: #5a4a7a; font-size: 16px;
-cursor: pointer; padding: 4px; line-height: 1;
-}
-.btn-del:hover { color: #e85a5a; }
+  .ring-wrap {
+    position: relative;
+    width: 62px;
+    height: 62px;
+  }
 
-/* PROGRESS / CHARTS */
-.chart-container { padding: 0 16px 12px; }
-.chart-card { background: #1A1033; border: 1px solid #3a2a5a; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-.chart-title { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: #a89cc8; font-weight: 600; margin-bottom: 4px; }
-.chart-subtitle { font-size: 12px; color: #5a4a7a; margin-bottom: 14px; }
-.chart-wrap { position: relative; height: 140px; }
-.chart-period-btns { display: flex; gap: 6px; margin-bottom: 12px; }
-.period-btn { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; cursor: pointer; border: 1px solid #3a2a5a; background: #211440; color: #5a4a7a; transition: all 0.15s; }
-.period-btn.active { background: #7CFF3A; color: #0D0D12; border-color: #7CFF3A; box-shadow: 0 0 10px rgba(124,255,58,0.3); }
-.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
-.stat-box { background: #211440; border-radius: 10px; padding: 10px 8px; text-align: center; }
-.stat-box .sv { font-family: ‘Rajdhani’, sans-serif; font-size: 20px; font-weight: 700; color: #F3F4F6; }
-.stat-box .sl { font-size: 9px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
-.lift-progress-selector { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-.lift-progress-selector select { flex: 1; background: #211440; border: 1px solid #3a2a5a; border-radius: 10px; padding: 10px 12px; color: #F3F4F6; font-size: 14px; font-family: ‘DM Sans’, sans-serif; outline: none; }
-.no-data-msg { text-align: center; color: #5a4a7a; font-size: 13px; padding: 30px 0; }
+  .ring-svg {
+    width: 62px;
+    height: 62px;
+    transform: rotate(-90deg);
+  }
 
-.page-unit-toggle {
-display: flex; align-items: center; gap: 0;
-background: #211440; border: 1px solid #3a2a5a;
-border-radius: 20px; overflow: hidden; flex-shrink: 0;
-}
-.page-unit-btn {
-padding: 5px 14px; border: none; background: transparent;
-font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
-cursor: pointer; color: #5a4a7a; font-family: ‘DM Sans’, sans-serif;
-transition: all 0.18s;
-}
-.page-unit-btn.active {
-background: #7CFF3A; color: #0D0D12; border-radius: 20px;
-box-shadow: 0 0 8px rgba(124,255,58,0.4);
-}
-.page-unit-btn.lift-active {
-background: #7CFF3A; color: #0D0D12; border-radius: 20px;
-box-shadow: 0 0 8px rgba(124,255,58,0.4);
-}
-.page-header-row {
-display: flex; align-items: center; justify-content: space-between;
-padding: 18px 20px 4px;
-}
-.page-header-row h1 { font-family: ‘Rajdhani’, sans-serif; font-size: 30px; font-weight: 700; color: #F3F4F6; }
+  .ring-track {
+    fill: none;
+    stroke: var(--surface3);
+    stroke-width: 4;
+  }
 
-/* SETTINGS GOALS */
-.goals-section { padding: 0 16px 12px; }
-.goals-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-.goals-row label { font-size: 12px; color: #a89cc8; width: 100px; }
-.goals-row input {
-flex: 1; background: #211440; border: 1px solid #3a2a5a;
-border-radius: 8px; padding: 8px 10px; color: #F3F4F6;
-font-size: 14px; font-family: ‘DM Sans’, sans-serif; outline: none; text-align: right;
-}
-.btn-save-goals {
-background: #7CFF3A; color: #0D0D12; border: none; border-radius: 10px;
-padding: 11px 20px; font-size: 13px; font-weight: 700;
-cursor: pointer; font-family: ‘DM Sans’, sans-serif; margin-top: 4px;
-box-shadow: 0 0 10px rgba(124,255,58,0.25);
-}
+  .ring-fill {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
 
-/* MACRO CALCULATOR */
-.unit-toggle {
-display: flex; background: #211440; border-radius: 10px;
-padding: 3px; gap: 3px; margin-bottom: 14px;
-}
-.unit-btn {
-flex: 1; padding: 7px; border: none; border-radius: 8px;
-font-size: 12px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer;
-background: transparent; color: #5a4a7a; transition: all 0.2s;
-font-family: ‘DM Sans’, sans-serif;
-}
-.unit-btn.active { background: #2A2A36; color: #F3F4F6; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .ring-cal .ring-fill { stroke: var(--green); }
+  .ring-pro .ring-fill { stroke: #a87cff; }
+  .ring-carb .ring-fill { stroke: var(--orange); }
+  .ring-fat .ring-fill { stroke: #e85a8a; }
 
-.mode-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
-.mode-btn {
-flex: 1; padding: 12px 8px; border-radius: 12px; border: 1.5px solid #3a2a5a;
-background: #211440; cursor: pointer; transition: all 0.2s;
-font-family: ‘DM Sans’, sans-serif; text-align: center;
-}
-.mode-btn .mode-icon { font-size: 22px; display: block; margin-bottom: 4px; }
-.mode-btn .mode-label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; display: block; color: #a89cc8; }
-.mode-btn .mode-desc { font-size: 10px; color: #5a4a7a; display: block; margin-top: 2px; }
-.mode-btn.bulk-active { border-color: #7CFF3A; background: #1a3a0a; box-shadow: 0 0 12px rgba(124,255,58,0.15); }
-.mode-btn.bulk-active .mode-label { color: #7CFF3A; }
-.mode-btn.lean-active { border-color: #FF6A2A; background: #2d1508; box-shadow: 0 0 12px rgba(255,106,42,0.15); }
-.mode-btn.lean-active .mode-label { color: #FF6A2A; }
+  .ring-val {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
 
-.calc-input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-end; }
-.calc-field { flex: 1; }
-.calc-field label { font-size: 10px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 5px; }
-.calc-field input, .calc-field select {
-width: 100%; background: #211440; border: 1px solid #3a2a5a;
-border-radius: 10px; padding: 11px 12px; color: #F3F4F6;
-font-size: 14px; font-family: ‘DM Sans’, sans-serif; outline: none;
-}
-.calc-field select option { background: #211440; color: #F3F4F6; }
+  .ring-label {
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
 
-.calc-result {
-background: #211440; border-radius: 12px; padding: 14px;
-margin-top: 12px; display: none;
-}
-.calc-result.visible { display: block; }
-.result-title { font-size: 10px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.result-macros { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-.result-macro { background: #2A2A36; border-radius: 10px; padding: 10px; text-align: center; }
-.result-macro .rv { font-family: ‘Rajdhani’, sans-serif; font-size: 22px; font-weight: 700; }
-.result-macro .rl { font-size: 9px; color: #5a4a7a; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
-.result-tdee { font-size: 11px; color: #5a4a7a; text-align: center; margin-bottom: 10px; }
-.btn-apply {
-width: 100%; background: #7CFF3A; color: #0D0D12; border: none;
-border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700;
-cursor: pointer; font-family: ‘DM Sans’, sans-serif;
-box-shadow: 0 0 14px rgba(124,255,58,0.3);
-}
-.btn-apply.lean { background: #FF6A2A; box-shadow: 0 0 14px rgba(255,106,42,0.3); }
-.calc-note { font-size: 11px; color: #5a4a7a; margin-top: 8px; text-align: center; line-height: 1.5; }
+  .kcal-progress {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  .kcal-progress span { color: var(--text2); }
+
+  .macro-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .macro-tile {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+
+  .macro-tile .val {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .macro-tile .lbl {
+    font-size: 9px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .weight-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .weight-input-row input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  .weight-input-row input::placeholder { color: var(--text3); }
+
+  .btn-plus {
+    width: 44px;
+    height: 44px;
+    background: var(--green);
+    border: none;
+    border-radius: 10px;
+    color: var(--bg);
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(124,255,58,0.3);
+  }
+
+  .lifts-empty {
+    color: var(--text3);
+    font-size: 14px;
+    padding: 4px 0;
+  }
+
+  .quick-add {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quick-add input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    width: 100%;
+  }
+
+  .quick-add input::placeholder { color: var(--text3); }
+
+  .macro-inputs {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 6px;
+  }
+
+  .macro-inputs input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 6px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    text-align: center;
+    width: 100%;
+  }
+
+  .macro-inputs input::placeholder {
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  .btn-green {
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+    box-shadow: 0 0 16px rgba(124,255,58,0.25);
+  }
+
+  .btn-green:active { opacity: 0.85; }
+
+  .meals-list {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .meal-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .meal-entry .meal-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .meal-entry .meal-macros {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .meal-entry .meal-kcal {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .empty-msg {
+    text-align: center;
+    color: var(--text3);
+    font-size: 14px;
+    padding: 24px 0;
+  }
+
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+
+  .scroll-area::-webkit-scrollbar { width: 0; }
+
+  .section-label {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    padding: 4px 20px 8px;
+    font-weight: 600;
+  }
+
+  .search-bar {
+    margin: 0 16px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    flex: 1;
+  }
+
+  .search-bar input::placeholder { color: var(--text3); }
+  .search-icon { color: var(--text3); font-size: 15px; }
+
+  .exercise-form {
+    margin: 0 16px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .exercise-form input {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 14px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .exercise-form input::placeholder { color: var(--text3); }
+
+  .muscle-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .tag {
+    padding: 6px 13px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface3);
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+
+  .tag.active {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+    box-shadow: 0 0 8px rgba(124,255,58,0.3);
+  }
+
+  .form-actions { display: flex; gap: 10px; }
+
+  .btn-cancel {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-create {
+    flex: 2;
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 0 10px rgba(124,255,58,0.25);
+  }
+
+  .exercise-cards {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ex-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+  }
+
+  .ex-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .ex-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .ex-tag {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .sets-table { width: 100%; }
+  .sets-table th {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 0 4px 6px;
+    text-align: center;
+  }
+
+  .sets-table td { padding: 4px; }
+
+  .sets-table input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 4px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Rajdhani', sans-serif;
+    outline: none;
+    text-align: center;
+    width: 100%;
+  }
+
+  .set-num {
+    text-align: center;
+    color: var(--text3);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .btn-add-set {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text3);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-add-ex {
+    margin: 10px 16px 0;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .weight-history {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .weight-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .weight-entry .we-date { font-size: 13px; color: var(--text2); }
+  .weight-entry .we-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .weight-entry .we-unit { font-size: 12px; color: var(--text3); }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #12082a;
+    border-top: 2px solid #5A2CA0;
+    box-shadow: 0 -4px 24px rgba(90,44,160,0.45);
+    display: flex;
+    height: 72px;
+    z-index: 100;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.15s;
+    position: relative;
+  }
+
+  .nav-item.active { color: var(--green); }
+
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 2px;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .nav-icon { font-size: 20px; }
+
+  .btn-del {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  .btn-del:hover { color: var(--danger); }
+
+  .chart-container { padding: 0 16px 12px; }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .chart-title {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text2);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 14px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 140px;
+  }
+
+  .chart-period-btns {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .period-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text3);
+    transition: all 0.15s;
+  }
+
+  .period-btn.active {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(124,255,58,0.3);
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .stat-box {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .stat-box .sv {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .stat-box .sl {
+    font-size: 9px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 2px;
+  }
+
+  .lift-progress-selector {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .lift-progress-selector select {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  .no-data-msg {
+    text-align: center;
+    color: var(--text3);
+    font-size: 13px;
+    padding: 30px 0;
+  }
+
+  .page-unit-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .page-unit-btn {
+    padding: 5px 14px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    color: var(--text3);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+  }
+
+  .page-unit-btn.active,
+  .page-unit-btn.lift-active {
+    background: var(--green);
+    color: var(--bg);
+    border-radius: 20px;
+    box-shadow: 0 0 8px rgba(124,255,58,0.4);
+  }
+
+  .goals-section { padding: 0 16px 12px; }
+
+  .goals-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .goals-row label {
+    font-size: 12px;
+    color: var(--text2);
+    width: 100px;
+  }
+
+  .goals-row input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    text-align: right;
+  }
+
+  .btn-save-goals {
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 4px;
+    box-shadow: 0 0 10px rgba(124,255,58,0.25);
+  }
+
+  .unit-toggle {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+    margin-bottom: 14px;
+  }
+
+  .unit-btn {
+    flex: 1;
+    padding: 7px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text3);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .unit-btn.active {
+    background: var(--surface3);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+
+  .mode-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    text-align: center;
+  }
+
+  .mode-btn .mode-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+  .mode-btn .mode-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: block;
+    color: var(--text2);
+  }
+
+  .mode-btn .mode-desc {
+    font-size: 10px;
+    color: var(--text3);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .mode-btn.bulk-active {
+    border-color: var(--green);
+    background: var(--green-bg);
+    box-shadow: 0 0 12px rgba(124,255,58,0.15);
+  }
+
+  .mode-btn.bulk-active .mode-label { color: var(--green); }
+
+  .mode-btn.lean-active {
+    border-color: var(--orange);
+    background: #2d1508;
+    box-shadow: 0 0 12px rgba(255,106,42,0.15);
+  }
+
+  .mode-btn.lean-active .mode-label { color: var(--orange); }
+
+  .calc-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: flex-end;
+  }
+
+  .calc-field { flex: 1; }
+
+  .calc-field label {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .calc-field input,
+  .calc-field select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  .calc-field select option {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .calc-result {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .calc-result.visible { display: block; }
+
+  .result-title {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .result-macros {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .result-macro {
+    background: var(--surface3);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .result-macro .rv {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .result-macro .rl {
+    font-size: 9px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 2px;
+  }
+
+  .result-tdee {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .btn-apply {
+    width: 100%;
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 0 14px rgba(124,255,58,0.3);
+  }
+
+  .btn-apply.lean {
+    background: var(--orange);
+    box-shadow: 0 0 14px rgba(255,106,42,0.3);
+  }
+
+  .calc-note {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 8px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .sync-note {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .sync-ok { color: var(--green); }
+  .sync-fail { color: var(--orange); }
 </style>
-
 </head>
 <body>
-
-<!-- HOME PAGE -->
 
 <div id="page-home" class="page active">
   <div class="header">
@@ -414,218 +1109,208 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
     <div class="subtitle" id="home-date-label"></div>
   </div>
   <div class="scroll-area">
-    <!-- Weight Card -->
     <div class="card">
       <div class="card-header">
         <div class="card-icon icon-green">⚖️</div>
         <span class="card-title">Today's Weight</span>
+        <div class="page-unit-toggle" style="margin-left:auto;">
+          <button class="page-unit-btn active" id="homeunit-lbs" onclick="setWeightUnitAll('lbs')">lbs</button>
+          <button class="page-unit-btn" id="homeunit-kg" onclick="setWeightUnitAll('kg')">kg</button>
+        </div>
       </div>
       <div class="weight-input-row">
         <input type="number" id="home-weight-input" placeholder="Log weight (lbs)" step="0.1">
         <button class="btn-plus" onclick="logWeightFromHome()">+</button>
       </div>
       <div id="home-weight-val" style="margin-top:8px;font-size:13px;color:var(--text2);"></div>
+      <div id="sync-status-home" class="sync-note"></div>
     </div>
 
-```
-<!-- Macros Card -->
-<div class="card">
-  <div class="card-header">
-    <div class="card-icon icon-orange">🍴</div>
-    <span class="card-title">Today's Macros</span>
-  </div>
-  <div class="macro-rings">
-    <div class="ring-item ring-cal">
-      <div class="ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 62 62">
-          <circle class="ring-track" cx="31" cy="31" r="27"/>
-          <circle class="ring-fill" id="ring-cal" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
-        </svg>
-        <div class="ring-val" id="rval-cal">0</div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-orange">🍴</div>
+        <span class="card-title">Today's Macros</span>
       </div>
-      <div class="ring-label">Cal</div>
-    </div>
-    <div class="ring-item ring-pro">
-      <div class="ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 62 62">
-          <circle class="ring-track" cx="31" cy="31" r="27"/>
-          <circle class="ring-fill" id="ring-pro" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
-        </svg>
-        <div class="ring-val" id="rval-pro">0</div>
+      <div class="macro-rings">
+        <div class="ring-item ring-cal">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 62 62">
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="ring-cal" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
+            </svg>
+            <div class="ring-val" id="rval-cal">0</div>
+          </div>
+          <div class="ring-label">Cal</div>
+        </div>
+        <div class="ring-item ring-pro">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 62 62">
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="ring-pro" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
+            </svg>
+            <div class="ring-val" id="rval-pro">0</div>
+          </div>
+          <div class="ring-label">Protein</div>
+        </div>
+        <div class="ring-item ring-carb">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 62 62">
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="ring-carb" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
+            </svg>
+            <div class="ring-val" id="rval-carb">0</div>
+          </div>
+          <div class="ring-label">Carbs</div>
+        </div>
+        <div class="ring-item ring-fat">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 62 62">
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="ring-fat" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
+            </svg>
+            <div class="ring-val" id="rval-fat">0</div>
+          </div>
+          <div class="ring-label">Fat</div>
+        </div>
       </div>
-      <div class="ring-label">Protein</div>
+      <div class="kcal-progress"><span id="kcal-today">0</span> / <span id="kcal-goal-label">3000</span> kcal</div>
     </div>
-    <div class="ring-item ring-carb">
-      <div class="ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 62 62">
-          <circle class="ring-track" cx="31" cy="31" r="27"/>
-          <circle class="ring-fill" id="ring-carb" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
-        </svg>
-        <div class="ring-val" id="rval-carb">0</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon icon-teal">🏋️</div>
+        <span class="card-title">Today's Lifts</span>
+        <span class="card-action" onclick="switchTab('lift')">Log →</span>
       </div>
-      <div class="ring-label">Carbs</div>
+      <div id="home-lifts-summary" class="lifts-empty">No sets logged today. Hit the gym!</div>
     </div>
-    <div class="ring-item ring-fat">
-      <div class="ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 62 62">
-          <circle class="ring-track" cx="31" cy="31" r="27"/>
-          <circle class="ring-fill" id="ring-fat" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
-        </svg>
-        <div class="ring-val" id="rval-fat">0</div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:12px;">
+        <div class="card-icon icon-green">🧮</div>
+        <span class="card-title">Macro Calculator</span>
+        <span id="active-mode-badge" style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.8px;padding:4px 10px;border-radius:20px;background:var(--green-bg);color:var(--green);">BULK</span>
       </div>
-      <div class="ring-label">Fat</div>
-    </div>
-  </div>
-  <div class="kcal-progress"><span id="kcal-today">0</span> / <span id="kcal-goal-label">3000</span> kcal</div>
-</div>
 
-<!-- Lifts Card -->
-<div class="card">
-  <div class="card-header">
-    <div class="card-icon icon-teal">🏋️</div>
-    <span class="card-title">Today's Lifts</span>
-    <span class="card-action" onclick="switchTab('lift')">Log →</span>
-  </div>
-  <div id="home-lifts-summary" class="lifts-empty">No sets logged today. Hit the gym!</div>
-</div>
-
-<!-- Macro Calculator -->
-<div class="card" style="margin-bottom:8px;">
-  <div class="card-header" style="margin-bottom:12px;">
-    <div class="card-icon icon-green">🧮</div>
-    <span class="card-title">Macro Calculator</span>
-    <span id="active-mode-badge" style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.8px;padding:4px 10px;border-radius:20px;background:var(--green-bg);color:var(--green);">BULK</span>
-  </div>
-
-  <!-- Unit Toggle -->
-  <div class="unit-toggle">
-    <button class="unit-btn active" id="unit-imperial" onclick="setUnit('imperial')">lbs · ft/in</button>
-    <button class="unit-btn" id="unit-metric" onclick="setUnit('metric')">kg · cm</button>
-  </div>
-
-  <!-- Bulk / Lean Mode -->
-  <div class="mode-toggle">
-    <div class="mode-btn bulk-active" id="mode-bulk" onclick="setMode('bulk')">
-      <span class="mode-icon">📈</span>
-      <span class="mode-label">Bulk</span>
-      <span class="mode-desc">+350 kcal surplus</span>
-    </div>
-    <div class="mode-btn" id="mode-lean" onclick="setMode('lean')">
-      <span class="mode-icon">🔥</span>
-      <span class="mode-label">Lean</span>
-      <span class="mode-desc">−350 kcal deficit</span>
-    </div>
-  </div>
-
-  <!-- Inputs -->
-  <div class="calc-input-row">
-    <div class="calc-field" style="flex:0.6;">
-      <label>Age</label>
-      <input type="number" id="calc-age" placeholder="25" min="10" max="100" oninput="calcMacros()">
-    </div>
-    <div class="calc-field" style="flex:1;">
-      <label id="weight-lbl">Weight (lbs)</label>
-      <input type="number" id="calc-weight" placeholder="165" step="0.1" oninput="calcMacros()">
-    </div>
-    <div class="calc-field" style="flex:0.5;">
-      <label>Sex</label>
-      <select id="calc-sex" onchange="calcMacros()">
-        <option value="female">♀</option>
-        <option value="male">♂</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Height row — changes based on unit -->
-  <div class="calc-input-row" id="height-imperial-row">
-    <div class="calc-field">
-      <label>Height (ft)</label>
-      <input type="number" id="calc-ft" placeholder="5" min="3" max="8" oninput="calcMacros()">
-    </div>
-    <div class="calc-field">
-      <label>Height (in)</label>
-      <input type="number" id="calc-in" placeholder="9" min="0" max="11" oninput="calcMacros()">
-    </div>
-  </div>
-  <div class="calc-input-row" id="height-metric-row" style="display:none;">
-    <div class="calc-field">
-      <label>Height (cm)</label>
-      <input type="number" id="calc-cm" placeholder="175" oninput="calcMacros()">
-    </div>
-  </div>
-
-  <!-- Activity -->
-  <div class="calc-field" style="margin-bottom:10px;">
-    <label>Activity Level</label>
-    <select id="calc-activity" onchange="calcMacros()">
-      <option value="1.2">Sedentary (desk job, no gym)</option>
-      <option value="1.375">Lightly active (1–3x/week)</option>
-      <option value="1.55" selected>Moderately active (3–5x/week)</option>
-      <option value="1.725">Very active (6–7x/week)</option>
-      <option value="1.9">Athlete (2x/day training)</option>
-    </select>
-  </div>
-
-  <!-- Result -->
-  <div class="calc-result" id="calc-result">
-    <div class="result-title" id="result-mode-label">📈 Bulk Mode — Calculated Goals</div>
-    <div class="result-tdee" id="result-tdee-line">TDEE: — kcal/day</div>
-    <div class="result-macros">
-      <div class="result-macro">
-        <div class="rv" id="res-cal" style="color:var(--green)">—</div>
-        <div class="rl">Calories</div>
+      <div class="unit-toggle">
+        <button class="unit-btn active" id="unit-imperial" onclick="setUnit('imperial')">lbs · ft/in</button>
+        <button class="unit-btn" id="unit-metric" onclick="setUnit('metric')">kg · cm</button>
       </div>
-      <div class="result-macro">
-        <div class="rv" id="res-pro" style="color:#4aa3f5">—</div>
-        <div class="rl">Protein (g)</div>
+
+      <div class="mode-toggle">
+        <div class="mode-btn bulk-active" id="mode-bulk" onclick="setMode('bulk')">
+          <span class="mode-icon">📈</span>
+          <span class="mode-label">Bulk</span>
+          <span class="mode-desc">+350 kcal surplus</span>
+        </div>
+        <div class="mode-btn" id="mode-lean" onclick="setMode('lean')">
+          <span class="mode-icon">🔥</span>
+          <span class="mode-label">Lean</span>
+          <span class="mode-desc">−350 kcal deficit</span>
+        </div>
       </div>
-      <div class="result-macro">
-        <div class="rv" id="res-carb" style="color:var(--orange)">—</div>
-        <div class="rl">Carbs (g)</div>
+
+      <div class="calc-input-row">
+        <div class="calc-field" style="flex:0.6;">
+          <label>Age</label>
+          <input type="number" id="calc-age" placeholder="25" min="10" max="100" oninput="calcMacros()">
+        </div>
+        <div class="calc-field" style="flex:1;">
+          <label id="weight-lbl">Weight (lbs)</label>
+          <input type="number" id="calc-weight" placeholder="165" step="0.1" oninput="calcMacros()">
+        </div>
+        <div class="calc-field" style="flex:0.5;">
+          <label>Sex</label>
+          <select id="calc-sex" onchange="calcMacros()">
+            <option value="female">♀</option>
+            <option value="male">♂</option>
+          </select>
+        </div>
       </div>
-      <div class="result-macro">
-        <div class="rv" id="res-fat" style="color:#e85a8a">—</div>
-        <div class="rl">Fat (g)</div>
+
+      <div class="calc-input-row" id="height-imperial-row">
+        <div class="calc-field">
+          <label>Height (ft)</label>
+          <input type="number" id="calc-ft" placeholder="5" min="3" max="8" oninput="calcMacros()">
+        </div>
+        <div class="calc-field">
+          <label>Height (in)</label>
+          <input type="number" id="calc-in" placeholder="9" min="0" max="11" oninput="calcMacros()">
+        </div>
+      </div>
+
+      <div class="calc-input-row" id="height-metric-row" style="display:none;">
+        <div class="calc-field">
+          <label>Height (cm)</label>
+          <input type="number" id="calc-cm" placeholder="175" oninput="calcMacros()">
+        </div>
+      </div>
+
+      <div class="calc-field" style="margin-bottom:10px;">
+        <label>Activity Level</label>
+        <select id="calc-activity" onchange="calcMacros()">
+          <option value="1.2">Sedentary (desk job, no gym)</option>
+          <option value="1.375">Lightly active (1–3x/week)</option>
+          <option value="1.55" selected>Moderately active (3–5x/week)</option>
+          <option value="1.725">Very active (6–7x/week)</option>
+          <option value="1.9">Athlete (2x/day training)</option>
+        </select>
+      </div>
+
+      <div class="calc-result" id="calc-result">
+        <div class="result-title" id="result-mode-label">📈 Bulk Mode — Calculated Goals</div>
+        <div class="result-tdee" id="result-tdee-line">TDEE: — kcal/day</div>
+        <div class="result-macros">
+          <div class="result-macro">
+            <div class="rv" id="res-cal" style="color:var(--green)">—</div>
+            <div class="rl">Calories</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-pro" style="color:#4aa3f5">—</div>
+            <div class="rl">Protein (g)</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-carb" style="color:var(--orange)">—</div>
+            <div class="rl">Carbs (g)</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-fat" style="color:#e85a8a">—</div>
+            <div class="rl">Fat (g)</div>
+          </div>
+        </div>
+        <button class="btn-apply" id="btn-apply-goals" onclick="applyCalculatedGoals()">✓ Set as Daily Goals</button>
+        <div class="calc-note" id="calc-note"></div>
       </div>
     </div>
-    <button class="btn-apply" id="btn-apply-goals" onclick="applyCalculatedGoals()">✓ Set as Daily Goals</button>
-    <div class="calc-note" id="calc-note"></div>
-  </div>
-</div>
 
-<!-- Manual Goals (collapsed summary) -->
-<div class="card" style="margin-bottom:8px;">
-  <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
-    <div class="card-icon icon-teal">🎯</div>
-    <span class="card-title">Manual Goals</span>
-    <span style="margin-left:auto;font-size:11px;color:var(--text3);" id="manual-goals-toggle">▼ edit</span>
-  </div>
-  <div id="manual-goals-body" style="display:none;">
-    <div class="goals-section" style="padding:0;">
-      <div class="goals-row"><label>Calories (kcal)</label><input type="number" id="goal-cal" value="3000"></div>
-      <div class="goals-row"><label>Protein (g)</label><input type="number" id="goal-pro" value="200"></div>
-      <div class="goals-row"><label>Carbs (g)</label><input type="number" id="goal-carb" value="350"></div>
-      <div class="goals-row"><label>Fat (g)</label><input type="number" id="goal-fat" value="80"></div>
-      <button class="btn-save-goals" onclick="saveGoals()">Save Goals</button>
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
+        <div class="card-icon icon-teal">🎯</div>
+        <span class="card-title">Manual Goals</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);" id="manual-goals-toggle">▼ edit</span>
+      </div>
+      <div id="manual-goals-body" style="display:none;">
+        <div class="goals-section" style="padding:0;">
+          <div class="goals-row"><label>Calories (kcal)</label><input type="number" id="goal-cal" value="3000"></div>
+          <div class="goals-row"><label>Protein (g)</label><input type="number" id="goal-pro" value="200"></div>
+          <div class="goals-row"><label>Carbs (g)</label><input type="number" id="goal-carb" value="350"></div>
+          <div class="goals-row"><label>Fat (g)</label><input type="number" id="goal-fat" value="80"></div>
+          <button class="btn-save-goals" onclick="saveGoals()">Save Goals</button>
+        </div>
+      </div>
+      <div id="manual-goals-summary" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text2);" id="goals-summary-text"></span>
+      </div>
     </div>
-  </div>
-  <div id="manual-goals-summary" style="display:flex;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:12px;color:var(--text2);" id="goals-summary-text"></span>
   </div>
 </div>
-```
-
-  </div>
-</div>
-
-<!-- WEIGHT PAGE -->
 
 <div id="page-weight" class="page">
   <div class="page-header-row">
     <h1>Weight</h1>
     <div class="page-unit-toggle">
-      <button class="page-unit-btn active" id="wunit-lbs" onclick="setWeightUnit('lbs')">lbs</button>
-      <button class="page-unit-btn" id="wunit-kg" onclick="setWeightUnit('kg')">kg</button>
+      <button class="page-unit-btn active" id="wunit-lbs" onclick="setWeightUnitAll('lbs')">lbs</button>
+      <button class="page-unit-btn" id="wunit-kg" onclick="setWeightUnitAll('kg')">kg</button>
     </div>
   </div>
   <div class="date-nav">
@@ -643,14 +1328,13 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <input type="number" id="weight-input" placeholder="Enter weight (lbs)" step="0.1">
         <button class="btn-plus" onclick="logWeight()">+</button>
       </div>
+      <div id="sync-status-weight" class="sync-note"></div>
     </div>
     <div class="section-label">History</div>
     <div class="weight-history" id="weight-history"></div>
     <div id="weight-empty" class="empty-msg" style="display:none;">No weight logged yet.</div>
   </div>
 </div>
-
-<!-- FOOD PAGE -->
 
 <div id="page-food" class="page">
   <div class="header">
@@ -662,7 +1346,6 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
     <button onclick="shiftDate(1,'food')">›</button>
   </div>
   <div class="scroll-area">
-    <!-- Macros Card -->
     <div class="card">
       <div class="card-header">
         <div class="card-icon icon-orange">🍴</div>
@@ -672,8 +1355,8 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <div class="ring-item ring-cal">
           <div class="ring-wrap">
             <svg class="ring-svg" viewBox="0 0 62 62">
-              <circle class="ring-track" cx="31" cy="31" r="27"/>
-              <circle class="ring-fill" id="fring-cal" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="fring-cal" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
             </svg>
             <div class="ring-val" id="frval-cal">0</div>
           </div>
@@ -682,8 +1365,8 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <div class="ring-item ring-pro">
           <div class="ring-wrap">
             <svg class="ring-svg" viewBox="0 0 62 62">
-              <circle class="ring-track" cx="31" cy="31" r="27"/>
-              <circle class="ring-fill" id="fring-pro" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="fring-pro" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
             </svg>
             <div class="ring-val" id="frval-pro">0</div>
           </div>
@@ -692,8 +1375,8 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <div class="ring-item ring-carb">
           <div class="ring-wrap">
             <svg class="ring-svg" viewBox="0 0 62 62">
-              <circle class="ring-track" cx="31" cy="31" r="27"/>
-              <circle class="ring-fill" id="fring-carb" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="fring-carb" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
             </svg>
             <div class="ring-val" id="frval-carb">0</div>
           </div>
@@ -702,8 +1385,8 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <div class="ring-item ring-fat">
           <div class="ring-wrap">
             <svg class="ring-svg" viewBox="0 0 62 62">
-              <circle class="ring-track" cx="31" cy="31" r="27"/>
-              <circle class="ring-fill" id="fring-fat" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+              <circle class="ring-track" cx="31" cy="31" r="27"></circle>
+              <circle class="ring-fill" id="fring-fat" cx="31" cy="31" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"></circle>
             </svg>
             <div class="ring-val" id="frval-fat">0</div>
           </div>
@@ -713,37 +1396,31 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
       <div class="kcal-progress"><span id="fkcal-today">0</span> / <span id="fkcal-goal">3000</span> kcal</div>
     </div>
 
-```
-<!-- Remaining Tiles -->
-<div style="padding: 0 16px 12px;">
-  <div class="macro-tiles" id="macro-remaining"></div>
-</div>
-
-<!-- Quick Add -->
-<div class="card">
-  <div class="card-header" style="margin-bottom:10px;">
-    <span class="card-title">Quick Add</span>
-  </div>
-  <div class="quick-add">
-    <input type="text" id="meal-name" placeholder="What did you eat?">
-    <div class="macro-inputs">
-      <input type="number" id="meal-cal" placeholder="Cal">
-      <input type="number" id="meal-pro" placeholder="Pro">
-      <input type="number" id="meal-carb" placeholder="Carb">
-      <input type="number" id="meal-fat" placeholder="Fat">
+    <div style="padding: 0 16px 12px;">
+      <div class="macro-tiles" id="macro-remaining"></div>
     </div>
-    <button class="btn-green" onclick="addMeal()">+ Add Meal</button>
+
+    <div class="card">
+      <div class="card-header" style="margin-bottom:10px;">
+        <span class="card-title">Quick Add</span>
+      </div>
+      <div class="quick-add">
+        <input type="text" id="meal-name" placeholder="What did you eat?">
+        <div class="macro-inputs">
+          <input type="number" id="meal-cal" placeholder="Cal">
+          <input type="number" id="meal-pro" placeholder="Pro">
+          <input type="number" id="meal-carb" placeholder="Carb">
+          <input type="number" id="meal-fat" placeholder="Fat">
+        </div>
+        <button class="btn-green" onclick="addMeal()">+ Add Meal</button>
+      </div>
+      <div id="sync-status-food" class="sync-note"></div>
+    </div>
+
+    <div class="meals-list" id="meals-list"></div>
+    <div id="meals-empty" class="empty-msg">No meals logged yet today.</div>
   </div>
 </div>
-
-<div class="meals-list" id="meals-list"></div>
-<div id="meals-empty" class="empty-msg">No meals logged yet today.</div>
-```
-
-  </div>
-</div>
-
-<!-- LIFT PAGE -->
 
 <div id="page-lift" class="page">
   <div class="page-header-row">
@@ -765,27 +1442,22 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
       <input type="text" id="ex-search" placeholder="Search exercises..." oninput="renderExerciseCards()">
     </div>
 
-```
-<!-- New Exercise Form (hidden by default) -->
-<div class="exercise-form" id="new-ex-form" style="display:none; margin-bottom:12px;">
-  <input type="text" id="new-ex-name" placeholder="Exercise name">
-  <div class="muscle-tags" id="muscle-tags"></div>
-  <div class="form-actions">
-    <button class="btn-cancel" onclick="hideNewExForm()">Cancel</button>
-    <button class="btn-create" onclick="createExercise()">Create</button>
+    <div class="exercise-form" id="new-ex-form" style="display:none;">
+      <input type="text" id="new-ex-name" placeholder="Exercise name">
+      <div class="muscle-tags" id="muscle-tags"></div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="hideNewExForm()">Cancel</button>
+        <button class="btn-create" onclick="createExercise()">Create</button>
+      </div>
+    </div>
+
+    <div class="exercise-cards" id="exercise-cards"></div>
+    <div id="ex-empty" class="empty-msg" style="display:none;">No exercises found</div>
+    <button class="btn-add-ex" onclick="showNewExForm()">+ New Exercise</button>
+    <div id="sync-status-lift" class="sync-note" style="padding:10px 16px 0;"></div>
+    <div style="height:12px;"></div>
   </div>
 </div>
-
-<div class="exercise-cards" id="exercise-cards"></div>
-<div id="ex-empty" class="empty-msg" style="display:none;">No exercises found</div>
-<button class="btn-add-ex" onclick="showNewExForm()">+ New Exercise</button>
-<div style="height:12px;"></div>
-```
-
-  </div>
-</div>
-
-<!-- PROGRESS PAGE -->
 
 <div id="page-progress" class="page">
   <div class="header">
@@ -793,7 +1465,6 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
     <div class="subtitle">Your logged history</div>
   </div>
   <div class="scroll-area">
-    <!-- Weight Chart -->
     <div class="chart-container">
       <div class="chart-card">
         <div class="chart-title">Body Weight</div>
@@ -810,54 +1481,46 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
         <div class="stat-row" id="weight-stats"></div>
       </div>
 
-```
-  <!-- Calories Chart -->
-  <div class="chart-card">
-    <div class="chart-title">Daily Calories</div>
-    <div class="chart-subtitle" id="cal-chart-sub">kcal / day</div>
-    <div class="chart-period-btns">
-      <button class="period-btn active" onclick="setCalPeriod(7,this)">7D</button>
-      <button class="period-btn" onclick="setCalPeriod(14,this)">14D</button>
-      <button class="period-btn" onclick="setCalPeriod(30,this)">30D</button>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="cal-chart"></canvas>
-    </div>
-    <div class="stat-row" id="cal-stats"></div>
-  </div>
+      <div class="chart-card">
+        <div class="chart-title">Daily Calories</div>
+        <div class="chart-subtitle" id="cal-chart-sub">kcal / day</div>
+        <div class="chart-period-btns">
+          <button class="period-btn active" onclick="setCalPeriod(7,this)">7D</button>
+          <button class="period-btn" onclick="setCalPeriod(14,this)">14D</button>
+          <button class="period-btn" onclick="setCalPeriod(30,this)">30D</button>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="cal-chart"></canvas>
+        </div>
+        <div class="stat-row" id="cal-stats"></div>
+      </div>
 
-  <!-- Macro Split Chart -->
-  <div class="chart-card">
-    <div class="chart-title">Macro Split (7-day avg)</div>
-    <div class="chart-subtitle">Protein · Carbs · Fat</div>
-    <div class="chart-wrap" style="height:160px;">
-      <canvas id="macro-chart"></canvas>
-    </div>
-    <div class="stat-row" id="macro-stats"></div>
-  </div>
+      <div class="chart-card">
+        <div class="chart-title">Macro Split (7-day avg)</div>
+        <div class="chart-subtitle">Protein · Carbs · Fat</div>
+        <div class="chart-wrap" style="height:160px;">
+          <canvas id="macro-chart"></canvas>
+        </div>
+        <div class="stat-row" id="macro-stats"></div>
+      </div>
 
-  <!-- Lift Progress Chart -->
-  <div class="chart-card">
-    <div class="chart-title">Lift Progress</div>
-    <div class="chart-subtitle">Top weight per session</div>
-    <div class="lift-progress-selector">
-      <select id="lift-ex-select" onchange="renderLiftProgressChart()">
-        <option value="">Select an exercise…</option>
-      </select>
+      <div class="chart-card">
+        <div class="chart-title">Lift Progress</div>
+        <div class="chart-subtitle">Top weight per session</div>
+        <div class="lift-progress-selector">
+          <select id="lift-ex-select" onchange="renderLiftProgressChart()">
+            <option value="">Select an exercise…</option>
+          </select>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="lift-chart"></canvas>
+        </div>
+        <div class="stat-row" id="lift-stats"></div>
+        <div id="lift-no-data" class="no-data-msg" style="display:none;">Log sets for this exercise to see progress.</div>
+      </div>
     </div>
-    <div class="chart-wrap">
-      <canvas id="lift-chart"></canvas>
-    </div>
-    <div class="stat-row" id="lift-stats"></div>
-    <div id="lift-no-data" class="no-data-msg" style="display:none;">Log sets for this exercise to see progress.</div>
   </div>
 </div>
-```
-
-  </div>
-</div>
-
-<!-- BOTTOM NAV -->
 
 <nav class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('home')" id="nav-home">
@@ -882,42 +1545,68 @@ box-shadow: 0 0 14px rgba(124,255,58,0.3);
   </div>
 </nav>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
 <script>
-// ─── STATE ────────────────────────────────────────────────
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbySUVs_98ihOg1Ma5Px-F1sM66_vno0JVi5ZCUMgKsx05unnAfxR7lLXqEcGEmxk42XpA/exec';
 const MUSCLES = ['CHEST','BACK','SHOULDERS','LEGS','ARMS','CORE','FULL BODY'];
+
 let currentTab = 'home';
 let dateOffsets = { home: 0, weight: 0, food: 0, lift: 0 };
 let selectedMuscle = 'CHEST';
+let calcUnit = 'imperial';
+let calcMode = 'bulk';
+let weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
+let liftDisplayUnit = getData('liftDisplayUnit') || 'kg';
+let weightPeriod = 7, calPeriod = 7;
+let charts = {};
+
+Chart.defaults.color = '#5a4a7a';
+Chart.defaults.borderColor = '#3a2a5a';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
 
 function dateKey(offset = 0) {
   const d = new Date();
   d.setDate(d.getDate() + offset);
   return d.toISOString().split('T')[0];
 }
+
 function dateLabel(offset = 0) {
   if (offset === 0) return 'Today';
   const d = new Date();
   d.setDate(d.getDate() + offset);
   return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
 }
+
 function formatFullDate(offset = 0) {
   const d = new Date();
   d.setDate(d.getDate() + offset);
   return d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' });
 }
 
-// ─── STORAGE ──────────────────────────────────────────────
 function getData(key) {
   try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; }
 }
+
 function setData(key, val) {
   localStorage.setItem(key, JSON.stringify(val));
 }
+
 function getGoals() {
   return getData('goals') || { cal: 3000, pro: 200, carb: 350, fat: 80 };
 }
 
-// ─── TABS ─────────────────────────────────────────────────
+function setSyncStatus(scope, message, ok = true) {
+  const el = document.getElementById(`sync-status-${scope}`);
+  if (!el) return;
+  el.textContent = message || '';
+  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
+  if (message) {
+    clearTimeout(el._syncTimer);
+    el._syncTimer = setTimeout(() => { el.textContent = ''; el.className = 'sync-note'; }, 2500);
+  }
+}
+
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -926,6 +1615,7 @@ function switchTab(tab) {
   document.getElementById('nav-' + tab).classList.add('active');
   renderTab(tab);
 }
+
 function renderTab(tab) {
   if (tab === 'home') renderHome();
   if (tab === 'weight') renderWeight();
@@ -933,12 +1623,12 @@ function renderTab(tab) {
   if (tab === 'lift') renderLift();
   if (tab === 'progress') renderProgress();
 }
+
 function shiftDate(dir, tab) {
   dateOffsets[tab] += dir;
   renderTab(tab);
 }
 
-// ─── GOALS ────────────────────────────────────────────────
 function saveGoals() {
   const g = {
     cal: +document.getElementById('goal-cal').value || 3000,
@@ -952,6 +1642,7 @@ function saveGoals() {
   updateGoalsSummary();
   alert('Goals saved!');
 }
+
 function toggleManualGoals() {
   const body = document.getElementById('manual-goals-body');
   const summ = document.getElementById('manual-goals-summary');
@@ -961,15 +1652,12 @@ function toggleManualGoals() {
   summ.style.display = open ? 'flex' : 'none';
   toggle.textContent = open ? '▼ edit' : '▲ close';
 }
+
 function updateGoalsSummary() {
   const g = getGoals();
   const el = document.getElementById('goals-summary-text');
   if (el) el.textContent = `${g.cal} kcal · ${g.pro}g protein · ${g.carb}g carbs · ${g.fat}g fat`;
 }
-
-// ─── MACRO CALCULATOR ─────────────────────────────────────
-let calcUnit = 'imperial'; // 'imperial' | 'metric'
-let calcMode = 'bulk';     // 'bulk' | 'lean'
 
 function loadCalcState() {
   const saved = getData('calcState');
@@ -990,8 +1678,8 @@ function loadCalcState() {
 }
 
 function setUnit(unit) {
-  // When switching, auto-convert entered values
   if (unit === calcUnit) return;
+
   const wInput = document.getElementById('calc-weight');
   const ftInput = document.getElementById('calc-ft');
   const inInput = document.getElementById('calc-in');
@@ -1013,6 +1701,7 @@ function setUnit(unit) {
       inInput.value = Math.round(totalIn % 12);
     }
   }
+
   calcUnit = unit;
   applyUnitUI();
   calcMacros();
@@ -1039,11 +1728,17 @@ function applyModeUI() {
   const badge = document.getElementById('active-mode-badge');
   bulkBtn.className = 'mode-btn' + (calcMode === 'bulk' ? ' bulk-active' : '');
   leanBtn.className = 'mode-btn' + (calcMode === 'lean' ? ' lean-active' : '');
+
   if (calcMode === 'bulk') {
-    badge.style.background = 'var(--green-bg)'; badge.style.color = 'var(--green)'; badge.textContent = 'BULK';
+    badge.style.background = 'var(--green-bg)';
+    badge.style.color = 'var(--green)';
+    badge.textContent = 'BULK';
   } else {
-    badge.style.background = '#0d1a2d'; badge.style.color = '#4aa3f5'; badge.textContent = 'LEAN';
+    badge.style.background = '#2d1508';
+    badge.style.color = 'var(--orange)';
+    badge.textContent = 'LEAN';
   }
+
   const applyBtn = document.getElementById('btn-apply-goals');
   if (applyBtn) applyBtn.className = 'btn-apply' + (calcMode === 'lean' ? ' lean' : '');
 }
@@ -1055,6 +1750,7 @@ function calcMacros() {
   const weightRaw = parseFloat(document.getElementById('calc-weight').value);
 
   let weightKg, heightCm;
+
   if (calcUnit === 'imperial') {
     weightKg = weightRaw * 0.453592;
     const ft = parseFloat(document.getElementById('calc-ft').value) || 0;
@@ -1065,15 +1761,16 @@ function calcMacros() {
     heightCm = parseFloat(document.getElementById('calc-cm').value) || 0;
   }
 
-  // Save state
   setData('calcState', {
-    unit: calcUnit, mode: calcMode,
+    unit: calcUnit,
+    mode: calcMode,
     age: document.getElementById('calc-age').value,
     weight: document.getElementById('calc-weight').value,
     ft: document.getElementById('calc-ft').value,
     in: document.getElementById('calc-in').value,
     cm: document.getElementById('calc-cm').value,
-    sex: sex, activity
+    sex,
+    activity
   });
 
   const result = document.getElementById('calc-result');
@@ -1082,35 +1779,28 @@ function calcMacros() {
     return;
   }
 
-  // Mifflin-St Jeor BMR
   let bmr;
   if (sex === 'male') {
     bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
   } else {
     bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
   }
-  const tdee = Math.round(bmr * activity);
 
-  // Mode adjustments
+  const tdee = Math.round(bmr * activity);
   const surplus = calcMode === 'bulk' ? 350 : -350;
   const targetCal = tdee + surplus;
 
-  // Protein: bulk = 1g/lb, lean = 1.2g/lb (higher to preserve muscle)
   const weightLbs = calcUnit === 'imperial'
     ? parseFloat(document.getElementById('calc-weight').value)
     : weightKg * 2.20462;
+
   const proteinG = Math.round(calcMode === 'bulk' ? weightLbs * 1.0 : weightLbs * 1.2);
-
-  // Fat: ~25% of calories
   const fatG = Math.round((targetCal * 0.25) / 9);
-
-  // Carbs fill the rest
   const proteinCal = proteinG * 4;
   const fatCal = fatG * 9;
   const carbCal = targetCal - proteinCal - fatCal;
   const carbG = Math.max(0, Math.round(carbCal / 4));
 
-  // Update UI
   document.getElementById('res-cal').textContent = targetCal;
   document.getElementById('res-pro').textContent = proteinG + 'g';
   document.getElementById('res-carb').textContent = carbG + 'g';
@@ -1124,15 +1814,15 @@ function calcMacros() {
   const heightDisp = calcUnit === 'imperial'
     ? `${document.getElementById('calc-ft').value || 0}ft ${document.getElementById('calc-in').value || 0}in`
     : `${heightCm}cm`;
+
   const weightDisp = calcUnit === 'imperial'
     ? `${document.getElementById('calc-weight').value}lbs`
     : `${weightKg}kg`;
+
   document.getElementById('calc-note').textContent =
     `Based on ${weightDisp}, ${heightDisp}, age ${age}, ${sex} · Mifflin-St Jeor`;
 
   result.classList.add('visible');
-
-  // Store result for apply
   result.dataset.cal = targetCal;
   result.dataset.pro = proteinG;
   result.dataset.carb = carbG;
@@ -1147,8 +1837,8 @@ function applyCalculatedGoals() {
     carb: +result.dataset.carb,
     fat: +result.dataset.fat
   };
+
   setData('goals', g);
-  // Sync manual inputs too
   document.getElementById('goal-cal').value = g.cal;
   document.getElementById('goal-pro').value = g.pro;
   document.getElementById('goal-carb').value = g.carb;
@@ -1156,12 +1846,13 @@ function applyCalculatedGoals() {
   updateGoalsSummary();
   renderHome();
   renderFood();
-  // Flash feedback
+
   const btn = document.getElementById('btn-apply-goals');
   const orig = btn.textContent;
   btn.textContent = '✓ Goals Updated!';
   setTimeout(() => { btn.textContent = orig; }, 1800);
 }
+
 function loadGoalsInputs() {
   const g = getGoals();
   document.getElementById('goal-cal').value = g.cal;
@@ -1170,15 +1861,17 @@ function loadGoalsInputs() {
   document.getElementById('goal-fat').value = g.fat;
 }
 
-// ─── MACROS ───────────────────────────────────────────────
 function getDayMacros(dateStr) {
   const meals = getData('meals_' + dateStr) || [];
   return meals.reduce((acc, m) => {
-    acc.cal += m.cal || 0; acc.pro += m.pro || 0;
-    acc.carb += m.carb || 0; acc.fat += m.fat || 0;
+    acc.cal += m.cal || 0;
+    acc.pro += m.pro || 0;
+    acc.carb += m.carb || 0;
+    acc.fat += m.fat || 0;
     return acc;
   }, { cal: 0, pro: 0, carb: 0, fat: 0 });
 }
+
 function updateRings(prefix, macros, goals) {
   const r = 27, circ = 2 * Math.PI * r;
   const pairs = [
@@ -1187,6 +1880,7 @@ function updateRings(prefix, macros, goals) {
     ['carb', macros.carb, goals.carb],
     ['fat', macros.fat, goals.fat]
   ];
+
   pairs.forEach(([k, val, goal]) => {
     const pct = Math.min(val / (goal || 1), 1);
     const offset = circ - pct * circ;
@@ -1197,7 +1891,6 @@ function updateRings(prefix, macros, goals) {
   });
 }
 
-// ─── HOME ─────────────────────────────────────────────────
 function renderHome() {
   const off = dateOffsets.home;
   document.getElementById('home-date-label').textContent = formatFullDate(off);
@@ -1209,21 +1902,20 @@ function renderHome() {
   document.getElementById('kcal-today').textContent = Math.round(macros.cal);
   document.getElementById('kcal-goal-label').textContent = goals.cal;
 
-  // weight
   const weights = getData('weights') || [];
   const todayW = weights.find(w => w.date === dk);
+  const homeInput = document.getElementById('home-weight-input');
+  homeInput.placeholder = `Log weight (${weightDisplayUnit})`;
+
   if (todayW) {
     const dispVal = weightDisplayUnit === 'kg'
       ? (todayW.val * 0.453592).toFixed(1)
       : todayW.val;
     document.getElementById('home-weight-val').textContent = `Logged: ${dispVal} ${weightDisplayUnit}`;
-    document.getElementById('home-weight-input').placeholder = `Log weight (${weightDisplayUnit})`;
   } else {
     document.getElementById('home-weight-val').textContent = '';
-    document.getElementById('home-weight-input').placeholder = `Log weight (${weightDisplayUnit})`;
   }
 
-  // lifts summary
   const sessions = getData('sessions_' + dk) || [];
   const liftEl = document.getElementById('home-lifts-summary');
   let totalSets = 0;
@@ -1237,58 +1929,69 @@ function renderHome() {
   }
 }
 
+function setWeightUnitAll(unit) {
+  weightDisplayUnit = unit;
+  setData('weightDisplayUnit', unit);
+
+  [
+    ['wunit-lbs', 'lbs'],
+    ['wunit-kg', 'kg'],
+    ['homeunit-lbs', 'lbs'],
+    ['homeunit-kg', 'kg']
+  ].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'page-unit-btn' + (unit === val ? ' active' : '');
+  });
+
+  const weightInput = document.getElementById('weight-input');
+  const homeInput = document.getElementById('home-weight-input');
+  if (weightInput) weightInput.placeholder = `Enter weight (${unit})`;
+  if (homeInput) homeInput.placeholder = `Log weight (${unit})`;
+
+  renderHome();
+  renderWeight();
+}
+
 function logWeightFromHome() {
   const raw = parseFloat(document.getElementById('home-weight-input').value);
   if (!raw) return;
-  // always store in lbs
+
   const valLbs = weightDisplayUnit === 'kg' ? +(raw * 2.20462).toFixed(1) : raw;
   const dk = dateKey(dateOffsets.home);
   const weights = getData('weights') || [];
   const idx = weights.findIndex(w => w.date === dk);
+
   if (idx >= 0) weights[idx].val = valLbs;
   else weights.unshift({ date: dk, val: valLbs });
+
   setData('weights', weights);
   document.getElementById('home-weight-input').value = '';
   renderHome();
-}
-
-// ─── WEIGHT ───────────────────────────────────────────────
-let weightDisplayUnit = getData('weightDisplayUnit') || 'lbs'; // stored always in lbs
-let liftDisplayUnit = getData('liftDisplayUnit') || 'kg';      // stored always in kg
-
-function setWeightUnit(unit) {
-  weightDisplayUnit = unit;
-  setData('weightDisplayUnit', unit);
-  document.getElementById('wunit-lbs').className = 'page-unit-btn' + (unit === 'lbs' ? ' active' : '');
-  document.getElementById('wunit-kg').className  = 'page-unit-btn' + (unit === 'kg'  ? ' active' : '');
-  document.getElementById('weight-input').placeholder = `Enter weight (${unit})`;
   renderWeight();
-}
-function setLiftUnit(unit) {
-  liftDisplayUnit = unit;
-  setData('liftDisplayUnit', unit);
-  document.getElementById('lunit-kg').className  = 'page-unit-btn' + (unit === 'kg'  ? ' lift-active' : '');
-  document.getElementById('lunit-lbs').className = 'page-unit-btn' + (unit === 'lbs' ? ' lift-active' : '');
-  renderExerciseCards();
+  syncToSheets(dk, 'home');
 }
 
 function renderWeight() {
   const off = dateOffsets.weight;
   document.getElementById('weight-date-label').textContent = dateLabel(off);
-  // keep input placeholder in sync
   document.getElementById('weight-input').placeholder = `Enter weight (${weightDisplayUnit})`;
 
   const weights = getData('weights') || [];
   const hist = document.getElementById('weight-history');
   const empty = document.getElementById('weight-empty');
   hist.innerHTML = '';
-  if (!weights.length) { empty.style.display = 'block'; return; }
+
+  if (!weights.length) {
+    empty.style.display = 'block';
+    return;
+  }
+
   empty.style.display = 'none';
   weights.slice(0, 30).forEach(w => {
-    // stored in lbs always; convert for display
     const dispVal = weightDisplayUnit === 'kg'
       ? (w.val * 0.453592).toFixed(1)
       : w.val;
+
     const el = document.createElement('div');
     el.className = 'weight-entry';
     el.innerHTML = `
@@ -1299,28 +2002,34 @@ function renderWeight() {
     hist.appendChild(el);
   });
 }
+
 function logWeight() {
   const raw = parseFloat(document.getElementById('weight-input').value);
   if (!raw) return;
-  // always store in lbs
+
   const valLbs = weightDisplayUnit === 'kg' ? +(raw * 2.20462).toFixed(1) : raw;
   const dk = dateKey(dateOffsets.weight);
   const weights = getData('weights') || [];
   const idx = weights.findIndex(w => w.date === dk);
+
   if (idx >= 0) weights[idx].val = valLbs;
   else weights.unshift({ date: dk, val: valLbs });
+
   setData('weights', weights);
   document.getElementById('weight-input').value = '';
   renderWeight();
   renderHome();
+  syncToSheets(dk, 'weight');
 }
+
 function deleteWeight(date) {
   const weights = (getData('weights') || []).filter(w => w.date !== date);
   setData('weights', weights);
   renderWeight();
+  renderHome();
+  syncToSheets(date, 'weight');
 }
 
-// ─── FOOD ─────────────────────────────────────────────────
 function renderFood() {
   const off = dateOffsets.food;
   document.getElementById('food-date-label').textContent = dateLabel(off);
@@ -1332,7 +2041,6 @@ function renderFood() {
   document.getElementById('fkcal-today').textContent = Math.round(macros.cal);
   document.getElementById('fkcal-goal').textContent = goals.cal;
 
-  // remaining tiles
   const rem = document.getElementById('macro-remaining');
   rem.innerHTML = `
     <div class="macro-tile"><div class="val" style="color:var(--green)">${Math.max(0,Math.round(goals.cal-macros.cal))}</div><div class="lbl">Cal left</div></div>
@@ -1345,7 +2053,12 @@ function renderFood() {
   const list = document.getElementById('meals-list');
   const empty = document.getElementById('meals-empty');
   list.innerHTML = '';
-  if (!meals.length) { empty.style.display = 'block'; return; }
+
+  if (!meals.length) {
+    empty.style.display = 'block';
+    return;
+  }
+
   empty.style.display = 'none';
   meals.forEach((m, i) => {
     const el = document.createElement('div');
@@ -1363,6 +2076,7 @@ function renderFood() {
     list.appendChild(el);
   });
 }
+
 function addMeal() {
   const name = document.getElementById('meal-name').value || 'Meal';
   const cal = +document.getElementById('meal-cal').value || 0;
@@ -1370,28 +2084,44 @@ function addMeal() {
   const carb = +document.getElementById('meal-carb').value || 0;
   const fat = +document.getElementById('meal-fat').value || 0;
   if (!cal && !pro && !carb && !fat) return;
+
   const dk = dateKey(dateOffsets.food);
   const meals = getData('meals_' + dk) || [];
   meals.push({ name, cal, pro, carb, fat, ts: Date.now() });
   setData('meals_' + dk, meals);
-  ['meal-name','meal-cal','meal-pro','meal-carb','meal-fat'].forEach(id => document.getElementById(id).value = '');
+
+  ['meal-name','meal-cal','meal-pro','meal-carb','meal-fat'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
   renderFood();
   renderHome();
+  syncToSheets(dk, 'food');
 }
+
 function deleteMeal(dk, idx) {
   const meals = getData('meals_' + dk) || [];
   meals.splice(idx, 1);
   setData('meals_' + dk, meals);
   renderFood();
   renderHome();
+  syncToSheets(dk, 'food');
 }
 
-// ─── LIFT ─────────────────────────────────────────────────
+function setLiftUnit(unit) {
+  liftDisplayUnit = unit;
+  setData('liftDisplayUnit', unit);
+  document.getElementById('lunit-kg').className  = 'page-unit-btn' + (unit === 'kg'  ? ' lift-active' : '');
+  document.getElementById('lunit-lbs').className = 'page-unit-btn' + (unit === 'lbs' ? ' lift-active' : '');
+  renderExerciseCards();
+}
+
 function renderLift() {
   const off = dateOffsets.lift;
   document.getElementById('lift-date-label').textContent = dateLabel(off);
   renderExerciseCards();
 }
+
 function renderExerciseCards() {
   const off = dateOffsets.lift;
   const dk = dateKey(off);
@@ -1407,23 +2137,25 @@ function renderExerciseCards() {
     emptyEl.style.display = 'block';
     return;
   }
-  emptyEl.style.display = 'none';
 
-  const unit = liftDisplayUnit; // 'kg' or 'lbs'
+  emptyEl.style.display = 'none';
+  const unit = liftDisplayUnit;
 
   sessions.forEach((sess, si) => {
     const card = document.createElement('div');
     card.className = 'ex-card';
+
     const setsRows = (sess.sets || []).map((s, ri) => {
-      // stored always in kg; display converts
-      const dispWeight = s.weight === '' || s.weight === undefined ? ''
+      const dispWeight = s.weight === '' || s.weight === undefined
+        ? ''
         : unit === 'lbs' ? +(s.weight * 2.20462).toFixed(1) : s.weight;
+
       return `
         <tr>
           <td class="set-num">${ri + 1}</td>
-          <td><input type="number" placeholder="0" value="${s.reps || ''}" onchange="updateSet('${dk}',${si},${ri},'reps',this.value)" style="width:100%;"></td>
-          <td><input type="number" placeholder="0" value="${dispWeight}" step="${unit === 'lbs' ? '1' : '0.5'}" onchange="updateSetWeight('${dk}',${si},${ri},this.value)" style="width:100%;"></td>
-          <td><input type="number" placeholder="-" value="${s.rpe || ''}" step="0.5" min="1" max="10" onchange="updateSet('${dk}',${si},${ri},'rpe',this.value)" style="width:100%;"></td>
+          <td><input type="number" placeholder="0" value="${s.reps || ''}" onchange="updateSet('${dk}',${si},${ri},'reps',this.value)"></td>
+          <td><input type="number" placeholder="0" value="${dispWeight}" step="${unit === 'lbs' ? '1' : '0.5'}" onchange="updateSetWeight('${dk}',${si},${ri},this.value)"></td>
+          <td><input type="number" placeholder="-" value="${s.rpe || ''}" step="0.5" min="1" max="10" onchange="updateSet('${dk}',${si},${ri},'rpe',this.value)"></td>
           <td><button class="btn-del" onclick="deleteSet('${dk}',${si},${ri})">✕</button></td>
         </tr>
       `;
@@ -1437,14 +2169,16 @@ function renderExerciseCards() {
         </div>
         <button class="btn-del" onclick="deleteExercise('${dk}',${si})">✕</button>
       </div>
-      <table class="sets-table" style="width:100%">
-        <thead><tr>
-          <th style="width:28px;">#</th>
-          <th>Reps</th>
-          <th>${unit.toUpperCase()}</th>
-          <th>RPE</th>
-          <th style="width:28px;"></th>
-        </tr></thead>
+      <table class="sets-table">
+        <thead>
+          <tr>
+            <th style="width:28px;">#</th>
+            <th>Reps</th>
+            <th>${unit.toUpperCase()}</th>
+            <th>RPE</th>
+            <th style="width:28px;"></th>
+          </tr>
+        </thead>
         <tbody>${setsRows}</tbody>
       </table>
       <button class="btn-add-set" onclick="addSet('${dk}',${si})">+ Add Set</button>
@@ -1452,6 +2186,7 @@ function renderExerciseCards() {
     container.appendChild(card);
   });
 }
+
 function showNewExForm() {
   document.getElementById('new-ex-form').style.display = 'block';
   const tags = document.getElementById('muscle-tags');
@@ -1459,16 +2194,19 @@ function showNewExForm() {
     <div class="tag ${m === selectedMuscle ? 'active' : ''}" onclick="selectMuscle('${m}')">${m}</div>
   `).join('');
 }
+
 function hideNewExForm() {
   document.getElementById('new-ex-form').style.display = 'none';
   document.getElementById('new-ex-name').value = '';
 }
+
 function selectMuscle(m) {
   selectedMuscle = m;
   document.querySelectorAll('#muscle-tags .tag').forEach(t => {
     t.classList.toggle('active', t.textContent === m);
   });
 }
+
 function createExercise() {
   const name = document.getElementById('new-ex-name').value.trim();
   if (!name) return;
@@ -1479,14 +2217,18 @@ function createExercise() {
   hideNewExForm();
   renderExerciseCards();
   renderHome();
+  syncToSheets(dk, 'lift');
 }
+
 function deleteExercise(dk, idx) {
   const sessions = getData('sessions_' + dk) || [];
   sessions.splice(idx, 1);
   setData('sessions_' + dk, sessions);
   renderExerciseCards();
   renderHome();
+  syncToSheets(dk, 'lift');
 }
+
 function addSet(dk, si) {
   const sessions = getData('sessions_' + dk) || [];
   if (!sessions[si]) return;
@@ -1495,24 +2237,29 @@ function addSet(dk, si) {
   setData('sessions_' + dk, sessions);
   renderExerciseCards();
   renderHome();
+  syncToSheets(dk, 'lift');
 }
+
 function deleteSet(dk, si, ri) {
   const sessions = getData('sessions_' + dk) || [];
   sessions[si].sets.splice(ri, 1);
   setData('sessions_' + dk, sessions);
   renderExerciseCards();
   renderHome();
+  syncToSheets(dk, 'lift');
 }
+
 function updateSet(dk, si, ri, field, val) {
   const sessions = getData('sessions_' + dk) || [];
   if (sessions[si] && sessions[si].sets[ri]) {
     sessions[si].sets[ri][field] = val === '' ? '' : +val;
     setData('sessions_' + dk, sessions);
     renderHome();
+    syncToSheets(dk, 'lift');
   }
 }
+
 function updateSetWeight(dk, si, ri, val) {
-  // input is in display unit; store always in kg
   const sessions = getData('sessions_' + dk) || [];
   if (sessions[si] && sessions[si].sets[ri]) {
     const raw = parseFloat(val);
@@ -1520,43 +2267,8 @@ function updateSetWeight(dk, si, ri, val) {
     sessions[si].sets[ri].weight = kg;
     setData('sessions_' + dk, sessions);
     renderHome();
+    syncToSheets(dk, 'lift');
   }
-}
-
-// ─── INIT ─────────────────────────────────────────────────
-loadGoalsInputs();
-loadCalcState();
-// restore per-page unit toggles
-weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
-liftDisplayUnit   = getData('liftDisplayUnit')   || 'kg';
-setWeightUnit(weightDisplayUnit);
-setLiftUnit(liftDisplayUnit);
-renderHome();
-updateGoalsSummary();
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
-<script>
-// ─── CHART STATE ─────────────────────────────────────────
-let weightPeriod = 7, calPeriod = 7;
-let charts = {};
-
-Chart.defaults.color = '#5a4a7a';
-Chart.defaults.borderColor = '#3a2a5a';
-Chart.defaults.font.family = "'DM Sans', sans-serif";
-
-function setWeightPeriod(n, btn) {
-  weightPeriod = n;
-  btn.closest('.chart-period-btns').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderWeightChart();
-}
-function setCalPeriod(n, btn) {
-  calPeriod = n;
-  btn.closest('.chart-period-btns').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCalChart();
 }
 
 function getPastDates(n) {
@@ -1568,39 +2280,51 @@ function getPastDates(n) {
   }
   return dates;
 }
+
 function shortDate(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 
-// ─── WEIGHT CHART ────────────────────────────────────────
+function setWeightPeriod(n, btn) {
+  weightPeriod = n;
+  btn.closest('.chart-period-btns').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeightChart();
+}
+
+function setCalPeriod(n, btn) {
+  calPeriod = n;
+  btn.closest('.chart-period-btns').querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalChart();
+}
+
 function renderWeightChart() {
   const weights = getData('weights') || [];
   const dates = getPastDates(weightPeriod);
-  const vals = dates.map(d => {
+  const valsLbs = dates.map(d => {
     const w = weights.find(x => x.date === d);
     return w ? w.val : null;
   });
+
+  const vals = valsLbs.map(v => v === null ? null : (weightDisplayUnit === 'kg' ? +(v * 0.453592).toFixed(1) : v));
   const labels = dates.map(shortDate);
 
-  // stats
   const present = vals.filter(v => v !== null);
   const first = present[0], last = present[present.length - 1];
   const change = present.length >= 2 ? (last - first).toFixed(1) : null;
   const avg = present.length ? (present.reduce((a, b) => a + b, 0) / present.length).toFixed(1) : '—';
-  const min = present.length ? Math.min(...present).toFixed(1) : '—';
-  const max = present.length ? Math.max(...present).toFixed(1) : '—';
 
-  document.getElementById('weight-chart-sub').textContent = last ? `${last} lbs` : '— lbs';
+  document.getElementById('weight-chart-sub').textContent = last ? `${last} ${weightDisplayUnit}` : `— ${weightDisplayUnit}`;
   document.getElementById('weight-stats').innerHTML = `
-    <div class="stat-box"><div class="sv" style="color:var(--green)">${avg}</div><div class="sl">Avg lbs</div></div>
+    <div class="stat-box"><div class="sv" style="color:var(--green)">${avg}</div><div class="sl">Avg ${weightDisplayUnit}</div></div>
     <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--orange)' : '#4aa3f5'}">${change !== null ? (change >= 0 ? '+' : '') + change : '—'}</div><div class="sl">Change</div></div>
     <div class="stat-box"><div class="sv">${present.length}</div><div class="sl">Logged days</div></div>
   `;
 
   if (charts.weight) charts.weight.destroy();
   const ctx = document.getElementById('weight-chart').getContext('2d');
-
   const gradient = ctx.createLinearGradient(0, 0, 0, 140);
   gradient.addColorStop(0, 'rgba(124,255,58,0.25)');
   gradient.addColorStop(1, 'rgba(124,255,58,0)');
@@ -1615,29 +2339,41 @@ function renderWeightChart() {
         backgroundColor: gradient,
         borderWidth: 2.5,
         pointBackgroundColor: '#7CFF3A',
-        pointRadius: ctx2 => vals.map(v => v !== null ? 4 : 0),
-        pointHoverRadius: 6,
+        pointRadius: (context) => context.raw !== null ? 4 : 0,
+        pointHoverRadius: (context) => context.raw !== null ? 6 : 0,
         tension: 0.35,
         fill: true,
-        spanGaps: true,
+        spanGaps: true
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
-        titleColor: '#a89cc8', bodyColor: '#F3F4F6',
-        callbacks: { label: ctx => `${ctx.raw} lbs` }
-      }},
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A1033',
+          borderColor: '#3a2a5a',
+          borderWidth: 1,
+          titleColor: '#a89cc8',
+          bodyColor: '#F3F4F6',
+          callbacks: { label: ctx => `${ctx.raw} ${weightDisplayUnit}` }
+        }
+      },
       scales: {
-        x: { grid: { color: '#211440' }, ticks: { maxTicksLimit: 6, font: { size: 10 }, color: '#5a4a7a' } },
-        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' lbs' } }
+        x: {
+          grid: { color: '#211440' },
+          ticks: { maxTicksLimit: 6, font: { size: 10 }, color: '#5a4a7a' }
+        },
+        y: {
+          grid: { color: '#211440' },
+          ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' ' + weightDisplayUnit }
+        }
       }
     }
   });
 }
 
-// ─── CALORIE CHART ───────────────────────────────────────
 function renderCalChart() {
   const dates = getPastDates(calPeriod);
   const vals = dates.map(d => {
@@ -1648,7 +2384,7 @@ function renderCalChart() {
   const goals = getGoals();
 
   const present = vals.filter(v => v !== null);
-  const avg = present.length ? Math.round(present.reduce((a,b)=>a+b,0)/present.length) : 0;
+  const avg = present.length ? Math.round(present.reduce((a,b) => a + b, 0) / present.length) : 0;
   const max = present.length ? Math.max(...present) : 0;
   const logged = present.length;
 
@@ -1661,10 +2397,6 @@ function renderCalChart() {
 
   if (charts.cal) charts.cal.destroy();
   const ctx = document.getElementById('cal-chart').getContext('2d');
-
-  const gradient = ctx.createLinearGradient(0, 0, 0, 140);
-  gradient.addColorStop(0, 'rgba(255,106,42,0.3)');
-  gradient.addColorStop(1, 'rgba(255,106,42,0)');
 
   charts.cal = new Chart(ctx, {
     type: 'bar',
@@ -1681,7 +2413,7 @@ function renderCalChart() {
           return v >= goals.cal ? '#7CFF3A' : '#FF6A2A';
         }),
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 5
       }, {
         type: 'line',
         data: Array(dates.length).fill(goals.cal),
@@ -1689,46 +2421,63 @@ function renderCalChart() {
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
-        fill: false,
+        fill: false
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
-        titleColor: '#a89cc8', bodyColor: '#F3F4F6',
-        filter: item => item.datasetIndex === 0,
-        callbacks: { label: ctx => ctx.raw ? `${ctx.raw} kcal` : 'No data' }
-      }},
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A1033',
+          borderColor: '#3a2a5a',
+          borderWidth: 1,
+          titleColor: '#a89cc8',
+          bodyColor: '#F3F4F6',
+          filter: item => item.datasetIndex === 0,
+          callbacks: { label: ctx => ctx.raw ? `${ctx.raw} kcal` : 'No data' }
+        }
+      },
       scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 7, font: { size: 10 }, color: '#5a4a7a' } },
-        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' kcal' } }
+        x: {
+          grid: { display: false },
+          ticks: { maxTicksLimit: 7, font: { size: 10 }, color: '#5a4a7a' }
+        },
+        y: {
+          grid: { color: '#211440' },
+          ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' kcal' }
+        }
       }
     }
   });
 }
 
-// ─── MACRO SPLIT CHART ───────────────────────────────────
 function renderMacroChart() {
   const dates = getPastDates(7);
   let totP = 0, totC = 0, totF = 0;
+
   dates.forEach(d => {
     const m = getDayMacros(d);
-    totP += m.pro; totC += m.carb; totF += m.fat;
+    totP += m.pro;
+    totC += m.carb;
+    totF += m.fat;
   });
+
   const total = totP + totC + totF;
-  const pctP = total ? Math.round(totP/total*100) : 33;
-  const pctC = total ? Math.round(totC/total*100) : 34;
-  const pctF = total ? Math.round(totF/total*100) : 33;
+  const pctP = total ? Math.round(totP / total * 100) : 33;
+  const pctC = total ? Math.round(totC / total * 100) : 34;
+  const pctF = total ? Math.round(totF / total * 100) : 33;
 
   document.getElementById('macro-stats').innerHTML = `
-    <div class="stat-box"><div class="sv" style="color:#4aa3f5">${Math.round(totP/7)}g</div><div class="sl">Avg Protein</div></div>
-    <div class="stat-box"><div class="sv" style="color:var(--orange)">${Math.round(totC/7)}g</div><div class="sl">Avg Carbs</div></div>
-    <div class="stat-box"><div class="sv" style="color:#e85a8a">${Math.round(totF/7)}g</div><div class="sl">Avg Fat</div></div>
+    <div class="stat-box"><div class="sv" style="color:#4aa3f5">${Math.round(totP / 7)}g</div><div class="sl">Avg Protein</div></div>
+    <div class="stat-box"><div class="sv" style="color:var(--orange)">${Math.round(totC / 7)}g</div><div class="sl">Avg Carbs</div></div>
+    <div class="stat-box"><div class="sv" style="color:#e85a8a">${Math.round(totF / 7)}g</div><div class="sl">Avg Fat</div></div>
   `;
 
   if (charts.macro) charts.macro.destroy();
   const ctx = document.getElementById('macro-chart').getContext('2d');
+
   charts.macro = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -1738,20 +2487,30 @@ function renderMacroChart() {
         backgroundColor: ['rgba(168,124,255,0.8)', 'rgba(255,106,42,0.8)', 'rgba(232,90,138,0.8)'],
         borderColor: ['#a87cff', '#FF6A2A', '#e85a8a'],
         borderWidth: 1.5,
-        hoverOffset: 6,
+        hoverOffset: 6
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       cutout: '62%',
       plugins: {
         legend: {
           position: 'right',
-          labels: { font: { size: 11 }, padding: 12, color: '#a89cc8', boxWidth: 12, borderRadius: 3 }
+          labels: {
+            font: { size: 11 },
+            padding: 12,
+            color: '#a89cc8',
+            boxWidth: 12,
+            borderRadius: 3
+          }
         },
         tooltip: {
-          backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
-          titleColor: '#a89cc8', bodyColor: '#F3F4F6',
+          backgroundColor: '#1A1033',
+          borderColor: '#3a2a5a',
+          borderWidth: 1,
+          titleColor: '#a89cc8',
+          bodyColor: '#F3F4F6',
           callbacks: { label: ctx => `${ctx.label}: ${ctx.raw} kcal` }
         }
       }
@@ -1759,12 +2518,11 @@ function renderMacroChart() {
   });
 }
 
-// ─── LIFT PROGRESS CHART ─────────────────────────────────
 function populateLiftSelector() {
-  // Gather all unique exercise names from all sessions
   const sel = document.getElementById('lift-ex-select');
   const current = sel.value;
   const names = new Set();
+
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
     if (k && k.startsWith('sessions_')) {
@@ -1772,10 +2530,12 @@ function populateLiftSelector() {
       sessions.forEach(s => { if (s.name) names.add(s.name); });
     }
   }
+
   sel.innerHTML = '<option value="">Select an exercise…</option>';
   [...names].sort().forEach(n => {
     const opt = document.createElement('option');
-    opt.value = n; opt.textContent = n;
+    opt.value = n;
+    opt.textContent = n;
     if (n === current) opt.selected = true;
     sel.appendChild(opt);
   });
@@ -1786,10 +2546,17 @@ function renderLiftProgressChart() {
   const noData = document.getElementById('lift-no-data');
   const liftStats = document.getElementById('lift-stats');
 
-  if (charts.lift) { charts.lift.destroy(); charts.lift = null; }
-  if (!name) { noData.style.display = 'block'; liftStats.innerHTML = ''; return; }
+  if (charts.lift) {
+    charts.lift.destroy();
+    charts.lift = null;
+  }
 
-  // Collect all sessions with this exercise
+  if (!name) {
+    noData.style.display = 'block';
+    liftStats.innerHTML = '';
+    return;
+  }
+
   const dataPoints = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
@@ -1800,12 +2567,12 @@ function renderLiftProgressChart() {
         if (s.name === name && s.sets && s.sets.length) {
           const weights = s.sets.map(set => +set.weight || 0).filter(w => w > 0);
           const maxW = weights.length ? Math.max(...weights) : 0;
-          const totalVol = s.sets.reduce((acc, set) => acc + ((+set.reps||0) * (+set.weight||0)), 0);
-          if (maxW > 0) dataPoints.push({ date, maxW, totalVol });
+          if (maxW > 0) dataPoints.push({ date, maxW });
         }
       });
     }
   }
+
   dataPoints.sort((a, b) => a.date.localeCompare(b.date));
 
   if (!dataPoints.length) {
@@ -1813,17 +2580,20 @@ function renderLiftProgressChart() {
     liftStats.innerHTML = '';
     return;
   }
+
   noData.style.display = 'none';
 
   const labels = dataPoints.map(p => shortDate(p.date));
-  const vals = dataPoints.map(p => p.maxW);
+  const valsBase = dataPoints.map(p => p.maxW);
+  const vals = valsBase.map(v => liftDisplayUnit === 'lbs' ? +(v * 2.20462).toFixed(1) : v);
   const first = vals[0], last = vals[vals.length - 1];
   const change = (last - first).toFixed(1);
   const pr = Math.max(...vals);
+  const unit = liftDisplayUnit;
 
   liftStats.innerHTML = `
-    <div class="stat-box"><div class="sv" style="color:var(--green)">${pr}</div><div class="sl">PR (kg)</div></div>
-    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--green)' : '#e85a8a'}">${change >= 0 ? '+' : ''}${change}</div><div class="sl">kg Change</div></div>
+    <div class="stat-box"><div class="sv" style="color:var(--green)">${pr}</div><div class="sl">PR (${unit})</div></div>
+    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--green)' : '#e85a8a'}">${change >= 0 ? '+' : ''}${change}</div><div class="sl">${unit} Change</div></div>
     <div class="stat-box"><div class="sv">${dataPoints.length}</div><div class="sl">Sessions</div></div>
   `;
 
@@ -1838,26 +2608,33 @@ function renderLiftProgressChart() {
       labels,
       datasets: [{
         data: vals,
-        label: 'Top Weight (kg)',
+        label: `Top Weight (${unit})`,
         borderColor: '#3ab8c8',
         backgroundColor: gradient,
         borderWidth: 2.5,
         pointBackgroundColor: vals.map(v => v === pr ? '#3dd68c' : '#3ab8c8'),
         pointRadius: vals.map(v => v === pr ? 6 : 4),
         tension: 0.3,
-        fill: true,
+        fill: true
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#1e1e1e', borderColor: '#2a2a2a', borderWidth: 1,
-        titleColor: '#aaa', bodyColor: '#fff',
-        callbacks: { label: ctx => `${ctx.raw} kg` }
-      }},
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A1033',
+          borderColor: '#3a2a5a',
+          borderWidth: 1,
+          titleColor: '#a89cc8',
+          bodyColor: '#F3F4F6',
+          callbacks: { label: ctx => `${ctx.raw} ${unit}` }
+        }
+      },
       scales: {
-        x: { grid: { color: '#1e1e1e' }, ticks: { maxTicksLimit: 6, font: { size: 10 } } },
-        y: { grid: { color: '#1e1e1e' }, ticks: { font: { size: 10 }, callback: v => v + ' kg' } }
+        x: { grid: { color: '#211440' }, ticks: { maxTicksLimit: 6, font: { size: 10 } } },
+        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, callback: v => v + ' ' + unit } }
       }
     }
   });
@@ -1870,9 +2647,45 @@ function renderProgress() {
   populateLiftSelector();
   const sel = document.getElementById('lift-ex-select');
   if (sel.value) renderLiftProgressChart();
-  else { document.getElementById('lift-no-data').style.display = 'block'; }
+  else document.getElementById('lift-no-data').style.display = 'block';
 }
-</script>
 
+async function syncToSheets(date, scope = 'home') {
+  if (!SHEETS_URL || SHEETS_URL.includes('YOUR_SCRIPT')) return;
+
+  const dk = date || dateKey(0);
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify({
+        action: 'syncAll',
+        targetDate: dk,
+        weights: getData('weights') || [],
+        meals: getData('meals_' + dk) || [],
+        sessions: getData('sessions_' + dk) || []
+      })
+    });
+    setSyncStatus(scope, 'Synced to Google Sheets', true);
+  } catch (e) {
+    console.warn('Sheets sync failed', e);
+    setSyncStatus(scope, 'Sheets sync failed', false);
+  }
+}
+
+function init() {
+  loadGoalsInputs();
+  loadCalcState();
+  setWeightUnitAll(weightDisplayUnit);
+  setLiftUnit(liftDisplayUnit);
+  renderHome();
+  updateGoalsSummary();
+}
+
+init();
+</script>
 </body>
 </html>
