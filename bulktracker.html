@@ -8,19 +8,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --surface3: #252525;
-    --border: #2a2a2a;
-    --green: #3dd68c;
-    --green-dim: #1a4a35;
-    --green-bg: #0f2d22;
-    --orange: #e8923a;
-    --teal: #3ab8c8;
-    --text: #ffffff;
-    --text2: #aaaaaa;
-    --text3: #666666;
+    --bg: #0D0D12;
+    --surface: #1A1033;
+    --surface2: #211440;
+    --surface3: #2A2A36;
+    --border: #3a2a5a;
+    --green: #7CFF3A;
+    --green-dim: #2a4a1a;
+    --green-bg: #1a3a0a;
+    --orange: #FF6A2A;
+    --teal: #7CFF3A;
+    --purple: #5A2CA0;
+    --purple-light: #7a4cc0;
+    --text: #F3F4F6;
+    --text2: #a89cc8;
+    --text3: #5a4a7a;
     --radius: 14px;
     --tab-h: 72px;
   }
@@ -67,11 +69,11 @@ display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
 width: 36px; height: 36px; border-radius: 10px;
 display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
 }
-.icon-green { background: var(–green-bg); }
-.icon-orange { background: #2d1e0d; }
-.icon-teal { background: #0d2227; }
+.icon-green { background: #1a3a0a; border: 1px solid #2a5a10; }
+.icon-orange { background: #2d1508; border: 1px solid #5a2a10; }
+.icon-teal { background: #1a0a35; border: 1px solid var(–purple); }
 .card-title { font-size: 12px; font-weight: 600; letter-spacing: 1.2px; color: var(–text2); text-transform: uppercase; }
-.card-action { margin-left: auto; color: var(–green); font-size: 13px; font-weight: 600; cursor: pointer; }
+.card-action { margin-left: auto; color: var(–green); font-size: 13px; font-weight: 600; cursor: pointer; text-shadow: 0 0 8px rgba(124,255,58,0.5); }
 
 /* MACRO RINGS */
 .macro-rings { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 10px; }
@@ -81,7 +83,7 @@ display: flex; align-items: center; justify-content: center; font-size: 17px; fl
 .ring-track { fill: none; stroke: var(–surface3); stroke-width: 4; }
 .ring-fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
 .ring-cal .ring-fill { stroke: var(–green); }
-.ring-pro .ring-fill { stroke: #4aa3f5; }
+.ring-pro .ring-fill { stroke: #a87cff; }
 .ring-carb .ring-fill { stroke: var(–orange); }
 .ring-fat .ring-fill { stroke: #e85a8a; }
 .ring-val {
@@ -108,9 +110,9 @@ font-size: 15px; font-family: ‘DM Sans’, sans-serif; outline: none;
 .weight-input-row input::placeholder { color: var(–text3); }
 .btn-plus {
 width: 44px; height: 44px; background: var(–green); border: none;
-border-radius: 10px; color: #000; font-size: 22px; font-weight: 700;
+border-radius: 10px; color: #0D0D12; font-size: 22px; font-weight: 700;
 cursor: pointer; display: flex; align-items: center; justify-content: center;
-flex-shrink: 0;
+flex-shrink: 0; box-shadow: 0 0 12px rgba(124,255,58,0.3);
 }
 
 /* LIFTS CARD */
@@ -133,10 +135,11 @@ text-align: center; width: 100%;
 }
 .macro-inputs input::placeholder { color: var(–text3); font-size: 12px; }
 .btn-green {
-background: var(–green); color: #000; border: none; border-radius: 12px;
+background: var(–green); color: #0D0D12; border: none; border-radius: 12px;
 padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
 display: flex; align-items: center; justify-content: center; gap: 6px;
 font-family: ‘DM Sans’, sans-serif; width: 100%;
+box-shadow: 0 0 16px rgba(124,255,58,0.25);
 }
 .btn-green:active { opacity: 0.85; }
 
@@ -188,7 +191,7 @@ letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer;
 border: 1px solid var(–border); background: var(–surface3); color: var(–text2);
 transition: all 0.15s;
 }
-.tag.active { background: var(–green); color: #000; border-color: var(–green); }
+.tag.active { background: var(–green); color: #0D0D12; border-color: var(–green); box-shadow: 0 0 8px rgba(124,255,58,0.3); }
 .form-actions { display: flex; gap: 10px; }
 .btn-cancel {
 flex: 1; background: none; border: none; color: var(–text2);
@@ -196,9 +199,10 @@ font-size: 15px; font-weight: 600; cursor: pointer; padding: 13px;
 font-family: ‘DM Sans’, sans-serif;
 }
 .btn-create {
-flex: 2; background: var(–green); color: #000; border: none;
+flex: 2; background: var(–green); color: #0D0D12; border: none;
 border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700;
 cursor: pointer; font-family: ‘DM Sans’, sans-serif;
+box-shadow: 0 0 10px rgba(124,255,58,0.25);
 }
 
 /* EXERCISE CARDS */
@@ -250,17 +254,25 @@ display: flex; align-items: center; justify-content: space-between;
 .bottom-nav {
 position: fixed; bottom: 0; left: 0; right: 0;
 max-width: 430px; margin: 0 auto;
-background: var(–surface); border-top: 1px solid var(–border);
+background: #12082a;
+border-top: 2px solid var(–purple);
+box-shadow: 0 -4px 24px rgba(90,44,160,0.45);
 display: flex; height: var(–tab-h); z-index: 100;
 }
 .nav-item {
 flex: 1; display: flex; flex-direction: column; align-items: center;
 justify-content: center; gap: 4px; cursor: pointer; color: var(–text3);
-font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
-transition: color 0.15s;
+font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+transition: color 0.15s; position: relative;
 }
 .nav-item.active { color: var(–green); }
-.nav-icon { font-size: 22px; }
+.nav-item.active::after {
+content: ‘’; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+width: 32px; height: 2px; background: var(–green);
+box-shadow: 0 0 8px var(–green);
+border-radius: 2px 2px 0 0;
+}
+.nav-icon { font-size: 20px; }
 
 /* DELETE BTN */
 .btn-del {
@@ -277,7 +289,7 @@ cursor: pointer; padding: 4px; line-height: 1;
 .chart-wrap { position: relative; height: 140px; }
 .chart-period-btns { display: flex; gap: 6px; margin-bottom: 12px; }
 .period-btn { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; cursor: pointer; border: 1px solid var(–border); background: var(–surface2); color: var(–text3); transition: all 0.15s; }
-.period-btn.active { background: var(–green); color: #000; border-color: var(–green); }
+.period-btn.active { background: var(–green); color: #0D0D12; border-color: var(–green); box-shadow: 0 0 10px rgba(124,255,58,0.3); }
 .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
 .stat-box { background: var(–surface2); border-radius: 10px; padding: 10px 8px; text-align: center; }
 .stat-box .sv { font-family: ‘Rajdhani’, sans-serif; font-size: 20px; font-weight: 700; }
@@ -298,10 +310,12 @@ cursor: pointer; color: var(–text3); font-family: ‘DM Sans’, sans-serif;
 transition: all 0.18s;
 }
 .page-unit-btn.active {
-background: var(–green); color: #000; border-radius: 20px;
+background: var(–green); color: #0D0D12; border-radius: 20px;
+box-shadow: 0 0 8px rgba(124,255,58,0.4);
 }
 .page-unit-btn.lift-active {
-background: var(–teal); color: #000; border-radius: 20px;
+background: var(–green); color: #0D0D12; border-radius: 20px;
+box-shadow: 0 0 8px rgba(124,255,58,0.4);
 }
 .page-header-row {
 display: flex; align-items: center; justify-content: space-between;
@@ -319,9 +333,10 @@ border-radius: 8px; padding: 8px 10px; color: var(–text);
 font-size: 14px; font-family: ‘DM Sans’, sans-serif; outline: none; text-align: right;
 }
 .btn-save-goals {
-background: var(–green); color: #000; border: none; border-radius: 10px;
+background: var(–green); color: #0D0D12; border: none; border-radius: 10px;
 padding: 11px 20px; font-size: 13px; font-weight: 700;
 cursor: pointer; font-family: ‘DM Sans’, sans-serif; margin-top: 4px;
+box-shadow: 0 0 10px rgba(124,255,58,0.25);
 }
 
 /* MACRO CALCULATOR */
@@ -346,10 +361,10 @@ font-family: ‘DM Sans’, sans-serif; text-align: center;
 .mode-btn .mode-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 .mode-btn .mode-label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; display: block; }
 .mode-btn .mode-desc { font-size: 10px; color: var(–text3); display: block; margin-top: 2px; }
-.mode-btn.bulk-active { border-color: var(–green); background: var(–green-bg); }
+.mode-btn.bulk-active { border-color: var(–green); background: #1a3a0a; box-shadow: 0 0 12px rgba(124,255,58,0.15); }
 .mode-btn.bulk-active .mode-label { color: var(–green); }
-.mode-btn.lean-active { border-color: #4aa3f5; background: #0d1a2d; }
-.mode-btn.lean-active .mode-label { color: #4aa3f5; }
+.mode-btn.lean-active { border-color: var(–orange); background: #2d1508; box-shadow: 0 0 12px rgba(255,106,42,0.15); }
+.mode-btn.lean-active .mode-label { color: var(–orange); }
 
 .calc-input-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-end; }
 .calc-field { flex: 1; }
@@ -373,11 +388,12 @@ margin-top: 12px; display: none;
 .result-macro .rl { font-size: 9px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
 .result-tdee { font-size: 11px; color: var(–text3); text-align: center; margin-bottom: 10px; }
 .btn-apply {
-width: 100%; background: var(–green); color: #000; border: none;
+width: 100%; background: var(–green); color: #0D0D12; border: none;
 border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700;
 cursor: pointer; font-family: ‘DM Sans’, sans-serif;
+box-shadow: 0 0 14px rgba(124,255,58,0.3);
 }
-.btn-apply.lean { background: #4aa3f5; }
+.btn-apply.lean { background: var(–orange); box-shadow: 0 0 14px rgba(255,106,42,0.3); }
 .calc-note { font-size: 11px; color: var(–text3); margin-top: 8px; text-align: center; line-height: 1.5; }
 </style>
 
@@ -862,7 +878,6 @@ cursor: pointer; font-family: ‘DM Sans’, sans-serif;
 
 <script>
 // ─── STATE ────────────────────────────────────────────────
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbySUVs_98ihOg1Ma5Px-F1sM66_vno0JVi5ZCUMgKsx05unnAfxR7lLXqEcGEmxk42XpA/exec';
 const MUSCLES = ['CHEST','BACK','SHOULDERS','LEGS','ARMS','CORE','FULL BODY'];
 let currentTab = 'home';
 let dateOffsets = { home: 0, weight: 0, food: 0, lift: 0 };
@@ -1521,8 +1536,8 @@ updateGoalsSummary();
 let weightPeriod = 7, calPeriod = 7;
 let charts = {};
 
-Chart.defaults.color = '#666';
-Chart.defaults.borderColor = '#2a2a2a';
+Chart.defaults.color = '#5a4a7a';
+Chart.defaults.borderColor = '#3a2a5a';
 Chart.defaults.font.family = "'DM Sans', sans-serif";
 
 function setWeightPeriod(n, btn) {
@@ -1581,8 +1596,8 @@ function renderWeightChart() {
   const ctx = document.getElementById('weight-chart').getContext('2d');
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 140);
-  gradient.addColorStop(0, 'rgba(61,214,140,0.3)');
-  gradient.addColorStop(1, 'rgba(61,214,140,0)');
+  gradient.addColorStop(0, 'rgba(124,255,58,0.25)');
+  gradient.addColorStop(1, 'rgba(124,255,58,0)');
 
   charts.weight = new Chart(ctx, {
     type: 'line',
@@ -1590,10 +1605,10 @@ function renderWeightChart() {
       labels,
       datasets: [{
         data: vals,
-        borderColor: '#3dd68c',
+        borderColor: '#7CFF3A',
         backgroundColor: gradient,
         borderWidth: 2.5,
-        pointBackgroundColor: '#3dd68c',
+        pointBackgroundColor: '#7CFF3A',
         pointRadius: ctx2 => vals.map(v => v !== null ? 4 : 0),
         pointHoverRadius: 6,
         tension: 0.35,
@@ -1604,13 +1619,13 @@ function renderWeightChart() {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#1e1e1e', borderColor: '#2a2a2a', borderWidth: 1,
-        titleColor: '#aaa', bodyColor: '#fff',
+        backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
+        titleColor: '#a89cc8', bodyColor: '#F3F4F6',
         callbacks: { label: ctx => `${ctx.raw} lbs` }
       }},
       scales: {
-        x: { grid: { color: '#1e1e1e' }, ticks: { maxTicksLimit: 6, font: { size: 10 } } },
-        y: { grid: { color: '#1e1e1e' }, ticks: { font: { size: 10 }, callback: v => v + ' lbs' } }
+        x: { grid: { color: '#211440' }, ticks: { maxTicksLimit: 6, font: { size: 10 }, color: '#5a4a7a' } },
+        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' lbs' } }
       }
     }
   });
@@ -1642,8 +1657,8 @@ function renderCalChart() {
   const ctx = document.getElementById('cal-chart').getContext('2d');
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 140);
-  gradient.addColorStop(0, 'rgba(232,146,58,0.35)');
-  gradient.addColorStop(1, 'rgba(232,146,58,0)');
+  gradient.addColorStop(0, 'rgba(255,106,42,0.3)');
+  gradient.addColorStop(1, 'rgba(255,106,42,0)');
 
   charts.cal = new Chart(ctx, {
     type: 'bar',
@@ -1653,18 +1668,18 @@ function renderCalChart() {
         data: vals,
         backgroundColor: vals.map(v => {
           if (v === null) return 'transparent';
-          return v >= goals.cal ? 'rgba(61,214,140,0.7)' : 'rgba(232,146,58,0.7)';
+          return v >= goals.cal ? 'rgba(124,255,58,0.7)' : 'rgba(255,106,42,0.7)';
         }),
         borderColor: vals.map(v => {
           if (v === null) return 'transparent';
-          return v >= goals.cal ? '#3dd68c' : '#e8923a';
+          return v >= goals.cal ? '#7CFF3A' : '#FF6A2A';
         }),
         borderWidth: 1,
         borderRadius: 5,
       }, {
         type: 'line',
         data: Array(dates.length).fill(goals.cal),
-        borderColor: 'rgba(61,214,140,0.4)',
+        borderColor: 'rgba(124,255,58,0.4)',
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
@@ -1674,14 +1689,14 @@ function renderCalChart() {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#1e1e1e', borderColor: '#2a2a2a', borderWidth: 1,
-        titleColor: '#aaa', bodyColor: '#fff',
+        backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
+        titleColor: '#a89cc8', bodyColor: '#F3F4F6',
         filter: item => item.datasetIndex === 0,
         callbacks: { label: ctx => ctx.raw ? `${ctx.raw} kcal` : 'No data' }
       }},
       scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 7, font: { size: 10 } } },
-        y: { grid: { color: '#1e1e1e' }, ticks: { font: { size: 10 }, callback: v => v + ' kcal' } }
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 7, font: { size: 10 }, color: '#5a4a7a' } },
+        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' kcal' } }
       }
     }
   });
@@ -1714,8 +1729,8 @@ function renderMacroChart() {
       labels: [`Protein ${pctP}%`, `Carbs ${pctC}%`, `Fat ${pctF}%`],
       datasets: [{
         data: [totP * 4, totC * 4, totF * 9],
-        backgroundColor: ['rgba(74,163,245,0.8)', 'rgba(232,146,58,0.8)', 'rgba(232,90,138,0.8)'],
-        borderColor: ['#4aa3f5', '#e8923a', '#e85a8a'],
+        backgroundColor: ['rgba(168,124,255,0.8)', 'rgba(255,106,42,0.8)', 'rgba(232,90,138,0.8)'],
+        borderColor: ['#a87cff', '#FF6A2A', '#e85a8a'],
         borderWidth: 1.5,
         hoverOffset: 6,
       }]
@@ -1726,11 +1741,11 @@ function renderMacroChart() {
       plugins: {
         legend: {
           position: 'right',
-          labels: { font: { size: 11 }, padding: 12, color: '#aaa', boxWidth: 12, borderRadius: 3 }
+          labels: { font: { size: 11 }, padding: 12, color: '#a89cc8', boxWidth: 12, borderRadius: 3 }
         },
         tooltip: {
-          backgroundColor: '#1e1e1e', borderColor: '#2a2a2a', borderWidth: 1,
-          titleColor: '#aaa', bodyColor: '#fff',
+          backgroundColor: '#1A1033', borderColor: '#3a2a5a', borderWidth: 1,
+          titleColor: '#a89cc8', bodyColor: '#F3F4F6',
           callbacks: { label: ctx => `${ctx.label}: ${ctx.raw} kcal` }
         }
       }
@@ -1840,23 +1855,6 @@ function renderLiftProgressChart() {
       }
     }
   });
-}
-
-async function syncToSheets(date) {
-  if (!SHEETS_URL || SHEETS_URL.includes('YOUR_SCRIPT')) return;
-  const dk = date || dateKey(0);
-  try {
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'syncAll',
-        targetDate: dk,
-        weights: getData('weights') || [],
-        meals: getData('meals_' + dk) || [],
-        sessions: getData('sessions_' + dk) || []
-      })
-    });
-  } catch(e) { console.warn('Sheets sync failed', e); }
 }
 
 function renderProgress() {
