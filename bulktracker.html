@@ -1283,6 +1283,60 @@
       </div>
     </div>
 
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-teal">🕒</div>
+        <span class="card-title">Log Time Zone</span>
+      </div>
+      <div class="calc-field" style="margin-bottom:10px;">
+        <label>Time zone (IANA)</label>
+        <input type="text" id="timezone-input" placeholder="America/Vancouver" style="width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; color:var(--text); font-size:14px; font-family:'DM Sans', sans-serif; outline:none;">
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="saveTimeZone()">Save Time Zone</button>
+        <button class="btn-cancel" style="padding:11px 14px; background:var(--surface2); border-radius:10px;" onclick="resetTimeZone()">Use Device</button>
+      </div>
+      <div id="timezone-summary" class="sync-note"></div>
+    </div>
+
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-orange">🛠️</div>
+        <span class="card-title">Data Migration Tool</span>
+      </div>
+      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
+        Move meals and workout sessions from one stored day to another, without retyping. Weights stay separate.
+      </div>
+      <div class="calc-input-row">
+        <div class="calc-field">
+          <label>From date</label>
+          <select id="migrate-from-date" onchange="renderMigrationPreview()"></select>
+        </div>
+        <div class="calc-field">
+          <label>To date</label>
+          <input type="date" id="migrate-to-date" onchange="renderMigrationPreview()">
+        </div>
+      </div>
+      <div class="calc-input-row">
+        <div class="calc-field">
+          <label>Items</label>
+          <select id="migrate-type" onchange="renderMigrationPreview()">
+            <option value="both">Meals + Lifts</option>
+            <option value="meals">Meals only</option>
+            <option value="sessions">Lifts only</option>
+          </select>
+        </div>
+      </div>
+      <div id="migration-preview" class="sync-note" style="margin-bottom:10px;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="migrateLogs()">Move Logs</button>
+        <button class="btn-cancel" style="padding:11px 14px; background:var(--surface2); border-radius:10px;" onclick="populateMigrationTool()">Refresh Dates</button>
+      </div>
+      <div id="migration-status" class="sync-note"></div>
+    </div>
+
     <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
         <div class="card-icon icon-teal">🎯</div>
@@ -1560,6 +1614,228 @@ let weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
 let liftDisplayUnit = getData('liftDisplayUnit') || 'kg';
 let weightPeriod = 7, calPeriod = 7;
 let charts = {};
+let logTimeZone = getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+
+function round1(value) {
+  if (value === null || value === undefined || value === '') return value;
+  return Math.round(Number(value) * 10) / 10;
+}
+
+function format1(value) {
+  if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) return '—';
+  return round1(value).toFixed(1);
+}
+
+function currentDateInTimeZone(dateObj = new Date(), tz = logTimeZone) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(dateObj);
+
+  const map = {};
+  parts.forEach(p => { if (p.type !== 'literal') map[p.type] = p.value; });
+  return `${map.year}-${map.month}-${map.day}`;
+}
+
+function shiftDateKey(baseOffset = 0, tz = logTimeZone) {
+  const base = new Date();
+  base.setDate(base.getDate() + baseOffset);
+  return currentDateInTimeZone(base, tz);
+}
+
+function formatFullDateInTimeZone(offset = 0, tz = logTimeZone) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  }).format(d);
+}
+
+function dateLabelInTimeZone(offset = 0, tz = logTimeZone) {
+  if (offset === 0) return 'Today';
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric'
+  }).format(d);
+}
+
+function saveTimeZone() {
+  const input = document.getElementById('timezone-input');
+  const value = (input.value || '').trim();
+  const summary = document.getElementById('timezone-summary');
+  try {
+    if (!value) throw new Error('Empty');
+    new Intl.DateTimeFormat('en-US', { timeZone: value });
+    logTimeZone = value;
+    setData('logTimeZone', value);
+    updateTimeZoneSummary(true);
+    renderHome();
+    renderWeight();
+    renderFood();
+    renderLift();
+    renderProgress();
+    populateMigrationTool();
+  } catch (e) {
+    summary.textContent = 'Invalid time zone. Example: America/Vancouver';
+    summary.className = 'sync-note sync-fail';
+  }
+}
+
+function resetTimeZone() {
+  logTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  setData('logTimeZone', logTimeZone);
+  const input = document.getElementById('timezone-input');
+  if (input) input.value = logTimeZone;
+  updateTimeZoneSummary(true);
+  renderHome();
+  renderWeight();
+  renderFood();
+  renderLift();
+  renderProgress();
+  populateMigrationTool();
+}
+
+function updateTimeZoneSummary(saved = false) {
+  const input = document.getElementById('timezone-input');
+  const summary = document.getElementById('timezone-summary');
+  if (input) input.value = logTimeZone;
+  const utcNow = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).format(new Date());
+  const localDate = currentDateInTimeZone(new Date(), logTimeZone);
+  summary.textContent = `${saved ? 'Saved. ' : ''}Using ${logTimeZone} · current log date ${localDate} · UTC ${utcNow}`;
+  summary.className = 'sync-note' + (saved ? ' sync-ok' : '');
+}
+
+function allStoredDateKeys() {
+  const keys = new Set();
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k) continue;
+    if (k.startsWith('meals_') || k.startsWith('sessions_')) {
+      const dateKey = k.split('_')[1];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) keys.add(dateKey);
+    }
+  }
+  return [...keys].sort();
+}
+
+function populateMigrationTool() {
+  const fromSel = document.getElementById('migrate-from-date');
+  const toInput = document.getElementById('migrate-to-date');
+  if (!fromSel || !toInput) return;
+
+  const dates = allStoredDateKeys();
+  fromSel.innerHTML = '';
+  if (!dates.length) {
+    fromSel.innerHTML = '<option value="">No stored dates</option>';
+    document.getElementById('migration-preview').textContent = 'No meals or lifts found to migrate.';
+    return;
+  }
+
+  dates.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = d;
+    fromSel.appendChild(opt);
+  });
+
+  if (!toInput.value) toInput.value = shiftDateKey(0);
+  renderMigrationPreview();
+}
+
+function renderMigrationPreview() {
+  const from = document.getElementById('migrate-from-date')?.value;
+  const to = document.getElementById('migrate-to-date')?.value;
+  const type = document.getElementById('migrate-type')?.value || 'both';
+  const preview = document.getElementById('migration-preview');
+  if (!preview) return;
+
+  if (!from || !to) {
+    preview.textContent = 'Choose source and destination dates.';
+    return;
+  }
+  if (from === to) {
+    preview.textContent = 'Source and destination dates are the same.';
+    return;
+  }
+
+  const meals = getData('meals_' + from) || [];
+  const sessions = getData('sessions_' + from) || [];
+  const mealCount = meals.length;
+  const sessionCount = sessions.length;
+  const setCount = sessions.reduce((a, s) => a + ((s.sets || []).length), 0);
+
+  let parts = [];
+  if (type === 'both' || type === 'meals') parts.push(`${mealCount} meal${mealCount !== 1 ? 's' : ''}`);
+  if (type === 'both' || type === 'sessions') parts.push(`${sessionCount} exercise${sessionCount !== 1 ? 's' : ''}, ${setCount} set${setCount !== 1 ? 's' : ''}`);
+
+  preview.textContent = `Move ${parts.join(' and ')} from ${from} to ${to}. Existing logs on ${to} will be kept, and moved logs will be appended.`;
+}
+
+function migrateLogs() {
+  const from = document.getElementById('migrate-from-date')?.value;
+  const to = document.getElementById('migrate-to-date')?.value;
+  const type = document.getElementById('migrate-type')?.value || 'both';
+  const status = document.getElementById('migration-status');
+
+  if (!from || !to) {
+    status.textContent = 'Choose both dates first.';
+    status.className = 'sync-note sync-fail';
+    return;
+  }
+  if (from === to) {
+    status.textContent = 'Source and destination cannot be the same date.';
+    status.className = 'sync-note sync-fail';
+    return;
+  }
+
+  let movedMeals = 0;
+  let movedSessions = 0;
+
+  if (type === 'both' || type === 'meals') {
+    const fromMeals = getData('meals_' + from) || [];
+    const toMeals = getData('meals_' + to) || [];
+    if (fromMeals.length) {
+      setData('meals_' + to, [...toMeals, ...fromMeals]);
+      localStorage.removeItem('meals_' + from);
+      movedMeals = fromMeals.length;
+    }
+  }
+
+  if (type === 'both' || type === 'sessions') {
+    const fromSessions = getData('sessions_' + from) || [];
+    const toSessions = getData('sessions_' + to) || [];
+    if (fromSessions.length) {
+      setData('sessions_' + to, [...toSessions, ...fromSessions]);
+      localStorage.removeItem('sessions_' + from);
+      movedSessions = fromSessions.length;
+    }
+  }
+
+  renderHome();
+  renderFood();
+  renderLift();
+  renderProgress();
+  populateMigrationTool();
+  syncToSheets(to, 'home');
+  syncToSheets(from, 'home');
+
+  status.textContent = `Moved ${movedMeals} meal${movedMeals !== 1 ? 's' : ''} and ${movedSessions} exercise${movedSessions !== 1 ? 's' : ''}.`;
+  status.className = 'sync-note sync-ok';
+}
 
 Chart.defaults.color = '#5a4a7a';
 Chart.defaults.borderColor = '#3a2a5a';
@@ -1893,8 +2169,8 @@ function updateRings(prefix, macros, goals) {
 
 function renderHome() {
   const off = dateOffsets.home;
-  document.getElementById('home-date-label').textContent = formatFullDate(off);
-  const dk = dateKey(off);
+  document.getElementById('home-date-label').textContent = formatFullDateInTimeZone(off);
+  const dk = shiftDateKey(off);
   const goals = getGoals();
   const macros = getDayMacros(dk);
 
@@ -1909,8 +2185,8 @@ function renderHome() {
 
   if (todayW) {
     const dispVal = weightDisplayUnit === 'kg'
-      ? (todayW.val * 0.453592).toFixed(1)
-      : todayW.val;
+      ? format1(todayW.val * 0.453592)
+      : format1(todayW.val);
     document.getElementById('home-weight-val').textContent = `Logged: ${dispVal} ${weightDisplayUnit}`;
   } else {
     document.getElementById('home-weight-val').textContent = '';
@@ -1957,7 +2233,7 @@ function logWeightFromHome() {
   if (!raw) return;
 
   const valLbs = weightDisplayUnit === 'kg' ? +(raw * 2.20462).toFixed(1) : raw;
-  const dk = dateKey(dateOffsets.home);
+  const dk = shiftDateKey(dateOffsets.home);
   const weights = getData('weights') || [];
   const idx = weights.findIndex(w => w.date === dk);
 
@@ -1973,7 +2249,7 @@ function logWeightFromHome() {
 
 function renderWeight() {
   const off = dateOffsets.weight;
-  document.getElementById('weight-date-label').textContent = dateLabel(off);
+  document.getElementById('weight-date-label').textContent = dateLabelInTimeZone(off);
   document.getElementById('weight-input').placeholder = `Enter weight (${weightDisplayUnit})`;
 
   const weights = getData('weights') || [];
@@ -1989,8 +2265,8 @@ function renderWeight() {
   empty.style.display = 'none';
   weights.slice(0, 30).forEach(w => {
     const dispVal = weightDisplayUnit === 'kg'
-      ? (w.val * 0.453592).toFixed(1)
-      : w.val;
+      ? format1(w.val * 0.453592)
+      : format1(w.val);
 
     const el = document.createElement('div');
     el.className = 'weight-entry';
@@ -2008,7 +2284,7 @@ function logWeight() {
   if (!raw) return;
 
   const valLbs = weightDisplayUnit === 'kg' ? +(raw * 2.20462).toFixed(1) : raw;
-  const dk = dateKey(dateOffsets.weight);
+  const dk = shiftDateKey(dateOffsets.weight);
   const weights = getData('weights') || [];
   const idx = weights.findIndex(w => w.date === dk);
 
@@ -2032,8 +2308,8 @@ function deleteWeight(date) {
 
 function renderFood() {
   const off = dateOffsets.food;
-  document.getElementById('food-date-label').textContent = dateLabel(off);
-  const dk = dateKey(off);
+  document.getElementById('food-date-label').textContent = dateLabelInTimeZone(off);
+  const dk = shiftDateKey(off);
   const goals = getGoals();
   const macros = getDayMacros(dk);
 
@@ -2085,7 +2361,7 @@ function addMeal() {
   const fat = +document.getElementById('meal-fat').value || 0;
   if (!cal && !pro && !carb && !fat) return;
 
-  const dk = dateKey(dateOffsets.food);
+  const dk = shiftDateKey(dateOffsets.food);
   const meals = getData('meals_' + dk) || [];
   meals.push({ name, cal, pro, carb, fat, ts: Date.now() });
   setData('meals_' + dk, meals);
@@ -2118,13 +2394,13 @@ function setLiftUnit(unit) {
 
 function renderLift() {
   const off = dateOffsets.lift;
-  document.getElementById('lift-date-label').textContent = dateLabel(off);
+  document.getElementById('lift-date-label').textContent = dateLabelInTimeZone(off);
   renderExerciseCards();
 }
 
 function renderExerciseCards() {
   const off = dateOffsets.lift;
-  const dk = dateKey(off);
+  const dk = shiftDateKey(off);
   const query = (document.getElementById('ex-search')?.value || '').toLowerCase();
   let sessions = getData('sessions_' + dk) || [];
   if (query) sessions = sessions.filter(s => s.name.toLowerCase().includes(query));
@@ -2210,7 +2486,7 @@ function selectMuscle(m) {
 function createExercise() {
   const name = document.getElementById('new-ex-name').value.trim();
   if (!name) return;
-  const dk = dateKey(dateOffsets.lift);
+  const dk = shiftDateKey(dateOffsets.lift);
   const sessions = getData('sessions_' + dk) || [];
   sessions.push({ name, muscle: selectedMuscle, sets: [] });
   setData('sessions_' + dk, sessions);
@@ -2274,16 +2550,15 @@ function updateSetWeight(dk, si, ri, val) {
 function getPastDates(n) {
   const dates = [];
   for (let i = n - 1; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    dates.push(d.toISOString().split('T')[0]);
+    dates.push(shiftDateKey(-i));
   }
   return dates;
 }
 
 function shortDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  return new Intl.DateTimeFormat('en-US', { timeZone: logTimeZone, month:'short', day:'numeric' }).format(dt);
 }
 
 function setWeightPeriod(n, btn) {
@@ -2308,18 +2583,18 @@ function renderWeightChart() {
     return w ? w.val : null;
   });
 
-  const vals = valsLbs.map(v => v === null ? null : (weightDisplayUnit === 'kg' ? +(v * 0.453592).toFixed(1) : v));
+  const vals = valsLbs.map(v => v === null ? null : round1(weightDisplayUnit === 'kg' ? (v * 0.453592) : v));
   const labels = dates.map(shortDate);
 
   const present = vals.filter(v => v !== null);
   const first = present[0], last = present[present.length - 1];
   const change = present.length >= 2 ? (last - first).toFixed(1) : null;
-  const avg = present.length ? (present.reduce((a, b) => a + b, 0) / present.length).toFixed(1) : '—';
+  const avg = present.length ? round1(present.reduce((a, b) => a + b, 0) / present.length) : null;
 
-  document.getElementById('weight-chart-sub').textContent = last ? `${last} ${weightDisplayUnit}` : `— ${weightDisplayUnit}`;
+  document.getElementById('weight-chart-sub').textContent = last !== undefined && last !== null ? `${format1(last)} ${weightDisplayUnit}` : `— ${weightDisplayUnit}`;
   document.getElementById('weight-stats').innerHTML = `
-    <div class="stat-box"><div class="sv" style="color:var(--green)">${avg}</div><div class="sl">Avg ${weightDisplayUnit}</div></div>
-    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--orange)' : '#4aa3f5'}">${change !== null ? (change >= 0 ? '+' : '') + change : '—'}</div><div class="sl">Change</div></div>
+    <div class="stat-box"><div class="sv" style="color:var(--green)">${avg !== null ? format1(avg) : '—'}</div><div class="sl">Avg ${weightDisplayUnit}</div></div>
+    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--orange)' : '#4aa3f5'}">${change !== null ? (change >= 0 ? '+' : '') + format1(change) : '—'}</div><div class="sl">Change</div></div>
     <div class="stat-box"><div class="sv">${present.length}</div><div class="sl">Logged days</div></div>
   `;
 
@@ -2357,7 +2632,7 @@ function renderWeightChart() {
           borderWidth: 1,
           titleColor: '#a89cc8',
           bodyColor: '#F3F4F6',
-          callbacks: { label: ctx => `${ctx.raw} ${weightDisplayUnit}` }
+          callbacks: { label: ctx => `${format1(ctx.raw)} ${weightDisplayUnit}` }
         }
       },
       scales: {
@@ -2367,7 +2642,7 @@ function renderWeightChart() {
         },
         y: {
           grid: { color: '#211440' },
-          ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => v + ' ' + weightDisplayUnit }
+          ticks: { font: { size: 10 }, color: '#5a4a7a', callback: v => format1(v) + ' ' + weightDisplayUnit }
         }
       }
     }
@@ -2585,15 +2860,15 @@ function renderLiftProgressChart() {
 
   const labels = dataPoints.map(p => shortDate(p.date));
   const valsBase = dataPoints.map(p => p.maxW);
-  const vals = valsBase.map(v => liftDisplayUnit === 'lbs' ? +(v * 2.20462).toFixed(1) : v);
+  const vals = valsBase.map(v => round1(liftDisplayUnit === 'lbs' ? (v * 2.20462) : v));
   const first = vals[0], last = vals[vals.length - 1];
-  const change = (last - first).toFixed(1);
+  const change = round1(last - first);
   const pr = Math.max(...vals);
   const unit = liftDisplayUnit;
 
   liftStats.innerHTML = `
-    <div class="stat-box"><div class="sv" style="color:var(--green)">${pr}</div><div class="sl">PR (${unit})</div></div>
-    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--green)' : '#e85a8a'}">${change >= 0 ? '+' : ''}${change}</div><div class="sl">${unit} Change</div></div>
+    <div class="stat-box"><div class="sv" style="color:var(--green)">${format1(pr)}</div><div class="sl">PR (${unit})</div></div>
+    <div class="stat-box"><div class="sv" style="color:${change >= 0 ? 'var(--green)' : '#e85a8a'}">${change >= 0 ? '+' : ''}${format1(change)}</div><div class="sl">${unit} Change</div></div>
     <div class="stat-box"><div class="sv">${dataPoints.length}</div><div class="sl">Sessions</div></div>
   `;
 
@@ -2629,12 +2904,12 @@ function renderLiftProgressChart() {
           borderWidth: 1,
           titleColor: '#a89cc8',
           bodyColor: '#F3F4F6',
-          callbacks: { label: ctx => `${ctx.raw} ${unit}` }
+          callbacks: { label: ctx => `${format1(ctx.raw)} ${unit}` }
         }
       },
       scales: {
         x: { grid: { color: '#211440' }, ticks: { maxTicksLimit: 6, font: { size: 10 } } },
-        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, callback: v => v + ' ' + unit } }
+        y: { grid: { color: '#211440' }, ticks: { font: { size: 10 }, callback: v => format1(v) + ' ' + unit } }
       }
     }
   });
@@ -2653,7 +2928,7 @@ function renderProgress() {
 async function syncToSheets(date, scope = 'home') {
   if (!SHEETS_URL || SHEETS_URL.includes('YOUR_SCRIPT')) return;
 
-  const dk = date || dateKey(0);
+  const dk = date || shiftDateKey(0);
   try {
     await fetch(SHEETS_URL, {
       method: 'POST',
@@ -2679,10 +2954,12 @@ async function syncToSheets(date, scope = 'home') {
 function init() {
   loadGoalsInputs();
   loadCalcState();
+  updateTimeZoneSummary(false);
   setWeightUnitAll(weightDisplayUnit);
   setLiftUnit(liftDisplayUnit);
   renderHome();
   updateGoalsSummary();
+  populateMigrationTool();
 }
 
 init();
