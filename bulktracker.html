@@ -1337,6 +1337,30 @@
       <div id="migration-status" class="sync-note"></div>
     </div>
 
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-green">☁️</div>
+        <span class="card-title">Load from Sheets</span>
+      </div>
+      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
+        Import saved logs from Google Sheets into this browser. Merge keeps local logs and adds imported days. Replace clears local logs first, but keeps settings like goals, units, and timezone.
+      </div>
+      <div class="calc-input-row">
+        <div class="calc-field">
+          <label>Import mode</label>
+          <select id="import-mode">
+            <option value="merge">Merge with local data</option>
+            <option value="replace">Replace local logs</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets()">Load Data</button>
+      </div>
+      <div id="import-status" class="sync-note"></div>
+    </div>
+
     <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
         <div class="card-icon icon-teal">🎯</div>
@@ -2948,6 +2972,114 @@ async function syncToSheets(date, scope = 'home') {
   } catch (e) {
     console.warn('Sheets sync failed', e);
     setSyncStatus(scope, 'Sheets sync failed', false);
+  }
+}
+
+
+function setImportStatus(message, ok = true) {
+  const el = document.getElementById('import-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
+}
+
+function clearLocalLogsOnly() {
+  const preserve = {};
+  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone'];
+  keepKeys.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) preserve[k] = v;
+  });
+
+  localStorage.clear();
+
+  Object.entries(preserve).forEach(([k, v]) => localStorage.setItem(k, v));
+}
+
+function mergeUniqueObjects(existingArr, importedArr) {
+  const seen = new Set();
+  const out = [];
+  [...existingArr, ...importedArr].forEach(item => {
+    const key = JSON.stringify(item);
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(item);
+    }
+  });
+  return out;
+}
+
+function applyImportedData(payload, mode = 'merge') {
+  if (mode === 'replace') {
+    clearLocalLogsOnly();
+  }
+
+  const importedWeights = Array.isArray(payload.weights) ? payload.weights : [];
+  const importedMeals = payload.dailyMeals || {};
+  const importedSessions = payload.dailySessions || {};
+
+  // weights
+  const currentWeights = getData('weights') || [];
+  const byDate = new Map(currentWeights.map(w => [w.date, w]));
+  importedWeights.forEach(w => {
+    if (w && w.date) byDate.set(w.date, { date: w.date, val: Number(w.val) || 0 });
+  });
+  const mergedWeights = [...byDate.values()].sort((a, b) => b.date.localeCompare(a.date));
+  setData('weights', mergedWeights);
+
+  // meals
+  Object.entries(importedMeals).forEach(([dateKey, arr]) => {
+    const current = getData('meals_' + dateKey) || [];
+    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
+    setData('meals_' + dateKey, next);
+  });
+
+  // sessions
+  Object.entries(importedSessions).forEach(([dateKey, arr]) => {
+    const current = getData('sessions_' + dateKey) || [];
+    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
+    setData('sessions_' + dateKey, next);
+  });
+}
+
+async function loadFromSheets() {
+  const mode = document.getElementById('import-mode')?.value || 'merge';
+  setImportStatus('Loading from Sheets...', true);
+
+  try {
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify({
+        action: 'loadAll'
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data || !data.success) {
+      setImportStatus((data && data.error) ? `Load failed: ${data.error}` : 'Load failed', false);
+      return;
+    }
+
+    applyImportedData(data, mode);
+
+    renderHome();
+    renderWeight();
+    renderFood();
+    renderLift();
+    renderProgress();
+    populateMigrationTool();
+
+    const mealDays = Object.keys(data.dailyMeals || {}).length;
+    const sessionDays = Object.keys(data.dailySessions || {}).length;
+    const weightCount = Array.isArray(data.weights) ? data.weights.length : 0;
+    setImportStatus(`Loaded ${weightCount} weight day(s), ${mealDays} meal day(s), and ${sessionDays} workout day(s).`, true);
+  } catch (e) {
+    console.error(e);
+    setImportStatus('Could not load data from Sheets', false);
   }
 }
 
