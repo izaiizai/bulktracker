@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1100,6 +1099,189 @@
 
   .sync-ok { color: var(--green); }
   .sync-fail { color: var(--orange); }
+
+  .training-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 10px;
+  }
+
+  .training-btn {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface2);
+    color: var(--text2);
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .training-btn.active {
+    background: linear-gradient(180deg, rgba(255,59,48,0.18), rgba(45,12,12,0.95));
+    border-color: rgba(255,59,48,0.45);
+    color: #fff2f0;
+    box-shadow: 0 0 16px rgba(255,59,48,0.18);
+  }
+
+  .training-panel {
+    margin: 0 16px 12px;
+    background: linear-gradient(180deg, rgba(46,10,10,0.96), rgba(26,8,8,0.96));
+    border: 1px solid rgba(255,59,48,0.35);
+    border-radius: 14px;
+    padding: 14px;
+    color: #fff2f0;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+
+  .training-panel.active {
+    display: block;
+  }
+
+  .training-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 206, 0, 0.12) 0px,
+      rgba(255, 206, 0, 0.12) 10px,
+      rgba(255, 59, 48, 0.10) 10px,
+      rgba(255, 59, 48, 0.10) 20px
+    );
+    opacity: 0.28;
+    pointer-events: none;
+  }
+
+  .training-panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .training-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(0,0,0,0.22);
+    margin-bottom: 10px;
+  }
+
+  .training-title {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .training-subtitle {
+    font-size: 12px;
+    color: #ffd9d4;
+    margin-bottom: 10px;
+  }
+
+  .training-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .training-meta-box {
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 8px;
+  }
+
+  .training-meta-box .tm-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #ffc3b8;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .training-meta-box .tm-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff7f5;
+  }
+
+  .training-label-row {
+    margin: 0 16px 12px;
+    display: none;
+  }
+
+  .training-label-row.active {
+    display: block;
+  }
+
+  .training-label-row input,
+  .training-label-row select {
+    width: 100%;
+    background: #2a1010;
+    border: 1px solid rgba(255,59,48,0.28);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #fff2f0;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+
+  .training-label-row label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    color: #ffb2a8;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .ex-last-session {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #ffd36b;
+    letter-spacing: 0.02em;
+  }
+
+  #page-lift.training-live .search-bar,
+  #page-lift.training-live .exercise-form,
+  #page-lift.training-live .ex-card,
+  #page-lift.training-live .btn-add-ex {
+    border-color: rgba(255,59,48,0.25);
+    box-shadow: 0 0 0 1px rgba(255,206,0,0.04);
+  }
+
+  #page-lift.training-live .section-label {
+    color: #ffb2a8;
+  }
+
+  #page-lift.training-live .ex-tag {
+    color: #ffcc00;
+  }
+
+  #page-lift.training-live .btn-add-set {
+    color: #ffb2a8;
+    border-color: rgba(255,59,48,0.22);
+    background: rgba(42,16,16,0.65);
+  }
+
+  @media (max-width: 380px) {
+    .training-meta {
+      grid-template-columns: 1fr;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1338,30 +1520,6 @@
       <div id="migration-status" class="sync-note"></div>
     </div>
 
-
-    <div class="card" style="margin-bottom:8px;">
-      <div class="card-header" style="margin-bottom:10px;">
-        <div class="card-icon icon-green">☁️</div>
-        <span class="card-title">Load from Sheets</span>
-      </div>
-      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
-        Import saved logs from Google Sheets into this browser. Merge keeps local logs and adds imported days. Replace clears local logs first, but keeps settings like goals, units, and timezone.
-      </div>
-      <div class="calc-input-row">
-        <div class="calc-field">
-          <label>Import mode</label>
-          <select id="import-mode">
-            <option value="merge">Merge with local data</option>
-            <option value="replace">Replace local logs</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets()">Load Data</button>
-      </div>
-      <div id="import-status" class="sync-note"></div>
-    </div>
-
     <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
         <div class="card-icon icon-teal">🎯</div>
@@ -1514,6 +1672,37 @@
     <span id="lift-date-label">Today</span>
     <button onclick="shiftDate(1,'lift')">›</button>
   </div>
+
+  <div class="training-toolbar">
+    <button class="training-btn" id="training-start-btn" onclick="startTrainingMode()">Start Training Mode</button>
+    <button class="training-btn" id="training-end-btn" onclick="endTrainingMode()">End Training Mode</button>
+  </div>
+
+  <div class="training-label-row" id="training-label-row">
+    <label for="training-label-input">Session label</label>
+    <input type="text" id="training-label-input" placeholder="Push, Pull, Legs, Core, Full Body..." oninput="updateTrainingLabel(this.value)">
+  </div>
+
+  <div class="training-panel" id="training-panel">
+    <div class="training-badge">Emergency Training Mode</div>
+    <div class="training-title" id="training-day-title">Workout Session</div>
+    <div class="training-subtitle" id="training-session-subtitle">Training mode active</div>
+    <div class="training-meta">
+      <div class="training-meta-box">
+        <div class="tm-label">Day</div>
+        <div class="tm-value" id="training-meta-day">—</div>
+      </div>
+      <div class="training-meta-box">
+        <div class="tm-label">Session</div>
+        <div class="tm-value" id="training-meta-label">—</div>
+      </div>
+      <div class="training-meta-box">
+        <div class="tm-label">Started</div>
+        <div class="tm-value" id="training-meta-start">—</div>
+      </div>
+    </div>
+  </div>
+
   <div class="scroll-area">
     <div class="section-label">Select Exercise</div>
     <div class="search-bar">
@@ -1639,6 +1828,9 @@ let weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
 let liftDisplayUnit = getData('liftDisplayUnit') || 'kg';
 let weightPeriod = 7, calPeriod = 7;
 let charts = {};
+let trainingMode = getData('trainingMode') || false;
+let trainingStartTime = getData('trainingStartTime') || '';
+let trainingLabel = getData('trainingLabel') || '';
 let logTimeZone = getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
 function round1(value) {
@@ -2417,10 +2609,115 @@ function setLiftUnit(unit) {
   renderExerciseCards();
 }
 
+
+function getFriendlyDayName(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long' });
+}
+
+function startTrainingMode() {
+  trainingMode = true;
+  trainingStartTime = new Date().toISOString();
+  if (!trainingLabel) trainingLabel = 'Workout';
+  setData('trainingMode', trainingMode);
+  setData('trainingStartTime', trainingStartTime);
+  setData('trainingLabel', trainingLabel);
+  renderLift();
+}
+
+function endTrainingMode() {
+  trainingMode = false;
+  setData('trainingMode', trainingMode);
+  renderLift();
+}
+
+function updateTrainingLabel(value) {
+  trainingLabel = (value || '').trim();
+  setData('trainingLabel', trainingLabel);
+  updateTrainingPanel();
+}
+
+function updateTrainingPanel() {
+  const liftPage = document.getElementById('page-lift');
+  const panel = document.getElementById('training-panel');
+  const row = document.getElementById('training-label-row');
+  const startBtn = document.getElementById('training-start-btn');
+  const endBtn = document.getElementById('training-end-btn');
+  const labelInput = document.getElementById('training-label-input');
+
+  if (!liftPage || !panel || !row || !startBtn || !endBtn) return;
+
+  liftPage.classList.toggle('training-live', !!trainingMode);
+  panel.classList.toggle('active', !!trainingMode);
+  row.classList.toggle('active', !!trainingMode);
+  startBtn.classList.toggle('active', !!trainingMode);
+  endBtn.classList.toggle('active', !trainingMode);
+  startBtn.textContent = trainingMode ? 'Training Mode Active' : 'Start Training Mode';
+  endBtn.textContent = trainingMode ? 'End Training Mode' : 'Training Mode Off';
+
+  if (labelInput) labelInput.value = trainingLabel || '';
+
+  if (trainingMode) {
+    const dk = shiftDateKey(dateOffsets.lift);
+    const dateObj = new Date(dk + 'T12:00:00');
+    const dayText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    const started = trainingStartTime
+      ? new Date(trainingStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      : '—';
+    document.getElementById('training-day-title').textContent = trainingLabel || 'Workout Session';
+    document.getElementById('training-session-subtitle').textContent = 'Focused logging mode is active';
+    document.getElementById('training-meta-day').textContent = dayText;
+    document.getElementById('training-meta-label').textContent = trainingLabel || 'Workout';
+    document.getElementById('training-meta-start').textContent = started;
+  }
+}
+
+function getLastSessionSummary(exerciseName, excludeDate) {
+  const matches = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith('sessions_')) continue;
+    const date = k.replace('sessions_', '');
+    const sessions = getData(k) || [];
+    sessions.forEach(sess => {
+      if (sess.name === exerciseName && date !== excludeDate) {
+        const sets = Array.isArray(sess.sets) ? sess.sets : [];
+        const valid = sets.filter(s => (s.weight !== '' && s.weight !== undefined && s.weight !== null) || (s.reps !== '' && s.reps !== undefined && s.reps !== null));
+        if (!valid.length) return;
+        let top = valid[0];
+        valid.forEach(v => {
+          const topWeight = Number(top.weight || 0);
+          const currWeight = Number(v.weight || 0);
+          const topReps = Number(top.reps || 0);
+          const currReps = Number(v.reps || 0);
+          if (currWeight > topWeight || (currWeight === topWeight && currReps > topReps)) top = v;
+        });
+        matches.push({ date, top });
+      }
+    });
+  }
+
+  matches.sort((a, b) => b.date.localeCompare(a.date));
+  if (!matches.length) return '';
+
+  const last = matches[0];
+  const dateText = new Date(last.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const weightVal = last.top.weight === '' || last.top.weight === undefined || last.top.weight === null
+    ? ''
+    : (liftDisplayUnit === 'lbs' ? (Number(last.top.weight) * 2.20462).toFixed(1) : Number(last.top.weight).toFixed(1));
+  const repsVal = last.top.reps === '' || last.top.reps === undefined || last.top.reps === null ? '' : Number(last.top.reps);
+  if (weightVal && repsVal !== '') return `Last: ${dateText} · ${weightVal} ${liftDisplayUnit} × ${repsVal}`;
+  if (weightVal) return `Last: ${dateText} · ${weightVal} ${liftDisplayUnit}`;
+  if (repsVal !== '') return `Last: ${dateText} · ${repsVal} reps`;
+  return `Last: ${dateText}`;
+}
+
 function renderLift() {
   const off = dateOffsets.lift;
   document.getElementById('lift-date-label').textContent = dateLabelInTimeZone(off);
   renderExerciseCards();
+  updateTrainingPanel();
 }
 
 function renderExerciseCards() {
@@ -2467,6 +2764,7 @@ function renderExerciseCards() {
         <div>
           <div class="ex-name">${sess.name}</div>
           <div class="ex-tag">${sess.muscle || ''}</div>
+          ${trainingMode ? `<div class="ex-last-session">${getLastSessionSummary(sess.name, dk) || 'Last: no previous session'}</div>` : ''}
         </div>
         <button class="btn-del" onclick="deleteExercise('${dk}',${si})">✕</button>
       </div>
@@ -2976,114 +3274,6 @@ async function syncToSheets(date, scope = 'home') {
   }
 }
 
-
-function setImportStatus(message, ok = true) {
-  const el = document.getElementById('import-status');
-  if (!el) return;
-  el.textContent = message;
-  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
-}
-
-function clearLocalLogsOnly() {
-  const preserve = {};
-  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone'];
-  keepKeys.forEach(k => {
-    const v = localStorage.getItem(k);
-    if (v !== null) preserve[k] = v;
-  });
-
-  localStorage.clear();
-
-  Object.entries(preserve).forEach(([k, v]) => localStorage.setItem(k, v));
-}
-
-function mergeUniqueObjects(existingArr, importedArr) {
-  const seen = new Set();
-  const out = [];
-  [...existingArr, ...importedArr].forEach(item => {
-    const key = JSON.stringify(item);
-    if (!seen.has(key)) {
-      seen.add(key);
-      out.push(item);
-    }
-  });
-  return out;
-}
-
-function applyImportedData(payload, mode = 'merge') {
-  if (mode === 'replace') {
-    clearLocalLogsOnly();
-  }
-
-  const importedWeights = Array.isArray(payload.weights) ? payload.weights : [];
-  const importedMeals = payload.dailyMeals || {};
-  const importedSessions = payload.dailySessions || {};
-
-  // weights
-  const currentWeights = getData('weights') || [];
-  const byDate = new Map(currentWeights.map(w => [w.date, w]));
-  importedWeights.forEach(w => {
-    if (w && w.date) byDate.set(w.date, { date: w.date, val: Number(w.val) || 0 });
-  });
-  const mergedWeights = [...byDate.values()].sort((a, b) => b.date.localeCompare(a.date));
-  setData('weights', mergedWeights);
-
-  // meals
-  Object.entries(importedMeals).forEach(([dateKey, arr]) => {
-    const current = getData('meals_' + dateKey) || [];
-    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
-    setData('meals_' + dateKey, next);
-  });
-
-  // sessions
-  Object.entries(importedSessions).forEach(([dateKey, arr]) => {
-    const current = getData('sessions_' + dateKey) || [];
-    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
-    setData('sessions_' + dateKey, next);
-  });
-}
-
-async function loadFromSheets() {
-  const mode = document.getElementById('import-mode')?.value || 'merge';
-  setImportStatus('Loading from Sheets...', true);
-
-  try {
-    const res = await fetch(SHEETS_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify({
-        action: 'loadAll'
-      })
-    });
-
-    const data = await res.json();
-
-    if (!data || !data.success) {
-      setImportStatus((data && data.error) ? `Load failed: ${data.error}` : 'Load failed', false);
-      return;
-    }
-
-    applyImportedData(data, mode);
-
-    renderHome();
-    renderWeight();
-    renderFood();
-    renderLift();
-    renderProgress();
-    populateMigrationTool();
-
-    const mealDays = Object.keys(data.dailyMeals || {}).length;
-    const sessionDays = Object.keys(data.dailySessions || {}).length;
-    const weightCount = Array.isArray(data.weights) ? data.weights.length : 0;
-    setImportStatus(`Loaded ${weightCount} weight day(s), ${mealDays} meal day(s), and ${sessionDays} workout day(s).`, true);
-  } catch (e) {
-    console.error(e);
-    setImportStatus('Could not load data from Sheets', false);
-  }
-}
-
 function init() {
   loadGoalsInputs();
   loadCalcState();
@@ -3093,6 +3283,7 @@ function init() {
   renderHome();
   updateGoalsSummary();
   populateMigrationTool();
+  updateTrainingPanel();
 }
 
 init();
