@@ -1253,33 +1253,6 @@
     color: #fff7f5;
   }
 
-  .training-label-row {
-    margin: 0 16px 12px;
-    display: none;
-  }
-
-  .training-label-row.active { display: block; }
-
-  .training-label-row input {
-    width: 100%;
-    background: #2a1010;
-    border: 1px solid rgba(255,59,48,0.28);
-    border-radius: 12px;
-    padding: 12px 14px;
-    color: #fff2f0;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  .training-label-row label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 10px;
-    color: #ffb2a8;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
 
   .ex-last-session {
     margin-top: 4px;
@@ -1313,6 +1286,7 @@
       letter-spacing: 0.6px;
     }
   }
+
 
   .training-btn.active {
     background: linear-gradient(180deg, rgba(255,59,48,0.34), rgba(66,10,10,0.98)) !important;
@@ -1362,25 +1336,11 @@
     background: linear-gradient(180deg, rgba(60,14,14,0.82), rgba(36,10,10,0.82)) !important;
   }
 
-  .session-type-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .session-type-grid .calc-field {
-    margin-bottom: 0;
-  }
-
-  @media (max-width: 420px) {
-    .session-type-grid {
-      grid-template-columns: 1fr;
-    }
-  }
 
 </style>
 </head>
 <body>
+
 
 <div id="page-home" class="page active">
   <div class="header">
@@ -1603,6 +1563,20 @@
     <button class="training-btn" id="training-end-btn" onclick="endTrainingMode()">End Training Mode</button>
   </div>
 
+  <div class="training-label-row" id="training-label-row">
+    <label for="training-label-input">Session type</label>
+    <input type="text" id="training-label-input" placeholder="Push, Pull, Legs, Core, Full Body..." oninput="updateTrainingLabel(this.value)">
+  </div>
+
+  <div class="training-panel" id="training-panel">
+    <div class="training-badge">Emergency Training Mode</div>
+    <div class="training-title" id="training-day-title">Workout Session</div>
+    <div class="training-subtitle" id="training-session-subtitle">High-focus workout logging mode is active</div>
+    <div class="training-meta">
+      <div class="training-meta-box">
+        <div class="tm-label">Day</div>
+        <div class="tm-value" id="training-meta-day">—</div>
+      </div>
       <div class="training-meta-box">
         <div class="tm-label">Session</div>
         <div class="tm-value" id="training-meta-label">—</div>
@@ -1638,6 +1612,7 @@
     <div style="height:12px;"></div>
   </div>
 </div>
+
 
 <div id="page-settings" class="page">
   <div class="header">
@@ -1760,7 +1735,6 @@ let weightPeriod = 7, calPeriod = 7;
 let charts = {};
 let trainingMode = getData('trainingMode') || false;
 let trainingStartTime = getData('trainingStartTime') || '';
-let  = getData('') || '';
 let logTimeZone = getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
 function round1(value) {
@@ -2324,6 +2298,7 @@ function updateRings(prefix, macros, goals) {
   });
 }
 
+
 function getMostRecentWeight() {
   const weights = getData('weights') || [];
   if (!weights.length) return null;
@@ -2354,10 +2329,8 @@ function getFriendlyDayName(dateStr) {
 function startTrainingMode() {
   trainingMode = true;
   trainingStartTime = new Date().toISOString();
-  if (!)  = 'Workout';
   setData('trainingMode', trainingMode);
   setData('trainingStartTime', trainingStartTime);
-  setData('', );
   renderLift();
 }
 
@@ -2367,56 +2340,22 @@ function endTrainingMode() {
   renderLift();
 }
 
- else if (select &&  && ![...select.options].some(o => o.value === )) {
-    select.value = 'Other';
-  }
-  updateTrainingPanel();
-}
 
-     = (input && input.value ? input.value :  || '').trim();
-  } else {
-     = (value || '').trim();
-    if (input && value && value !== 'Other') input.value = '';
-  }
-  setData('', );
-  updateTrainingPanel();
-}
 
 function updateTrainingPanel() {
   const liftPage = document.getElementById('page-lift');
   const panel = document.getElementById('training-panel');
-  const row = document.getElementById('training-label-row');
   const startBtn = document.getElementById('training-start-btn');
   const endBtn = document.getElementById('training-end-btn');
-  const labelInput = document.getElementById('training-label-input');
 
-  if (!liftPage || !panel || !row || !startBtn || !endBtn) return;
+  if (!liftPage || !panel || !startBtn || !endBtn) return;
 
   liftPage.classList.toggle('training-live', !!trainingMode);
   panel.classList.toggle('active', !!trainingMode);
-  row.classList.toggle('active', !!trainingMode);
   startBtn.classList.toggle('active', !!trainingMode);
   endBtn.classList.toggle('active', !trainingMode);
   startBtn.textContent = trainingMode ? 'Training Active' : 'Start Training Mode';
   endBtn.textContent = trainingMode ? 'End Training Mode' : 'Training Standby';
-
-  const labelSelect = document.getElementById('training-label-select');
-  if (labelInput) {
-    if (labelSelect && labelSelect.value !== 'Other' && [...labelSelect.options].some(o => o.value === )) {
-      labelInput.value = '';
-    } else {
-      labelInput.value =  || '';
-    }
-  }
-  if (labelSelect) {
-    if ([...labelSelect.options].some(o => o.value === )) {
-      labelSelect.value =  || '';
-    } else if () {
-      labelSelect.value = 'Other';
-    } else {
-      labelSelect.value = '';
-    }
-  }
 
   if (trainingMode) {
     const dk = shiftDateKey(dateOffsets.lift);
@@ -2428,8 +2367,8 @@ function updateTrainingPanel() {
     document.getElementById('training-day-title').textContent = 'Workout Session';
     document.getElementById('training-session-subtitle').textContent = 'High-focus workout logging mode is active';
     document.getElementById('training-meta-day').textContent = dayText;
-    document.getElementById('training-meta-label').textContent =  || 'Workout';
     document.getElementById('training-meta-start').textContent = started;
+    document.getElementById('training-meta-label').textContent = 'Live';
   }
 }
 
