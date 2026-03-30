@@ -1314,7 +1314,6 @@
     }
   }
 
-
   .training-btn.active {
     background: linear-gradient(180deg, rgba(255,59,48,0.34), rgba(66,10,10,0.98)) !important;
     border-color: rgba(255,59,48,0.72) !important;
@@ -1382,7 +1381,6 @@
 </style>
 </head>
 <body>
-
 
 <div id="page-home" class="page active">
   <div class="header">
@@ -1605,20 +1603,6 @@
     <button class="training-btn" id="training-end-btn" onclick="endTrainingMode()">End Training Mode</button>
   </div>
 
-  <div class="training-label-row" id="training-label-row">
-    <label for="training-label-input">Session type</label>
-    <input type="text" id="training-label-input" placeholder="Push, Pull, Legs, Core, Full Body..." oninput="updateTrainingLabel(this.value)">
-  </div>
-
-  <div class="training-panel" id="training-panel">
-    <div class="training-badge">Emergency Training Mode</div>
-    <div class="training-title" id="training-day-title">Workout Session</div>
-    <div class="training-subtitle" id="training-session-subtitle">High-focus workout logging mode is active</div>
-    <div class="training-meta">
-      <div class="training-meta-box">
-        <div class="tm-label">Day</div>
-        <div class="tm-value" id="training-meta-day">—</div>
-      </div>
       <div class="training-meta-box">
         <div class="tm-label">Session</div>
         <div class="tm-value" id="training-meta-label">—</div>
@@ -1654,7 +1638,6 @@
     <div style="height:12px;"></div>
   </div>
 </div>
-
 
 <div id="page-settings" class="page">
   <div class="header">
@@ -1777,7 +1760,7 @@ let weightPeriod = 7, calPeriod = 7;
 let charts = {};
 let trainingMode = getData('trainingMode') || false;
 let trainingStartTime = getData('trainingStartTime') || '';
-let trainingLabel = getData('trainingLabel') || '';
+let  = getData('') || '';
 let logTimeZone = getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
 function round1(value) {
@@ -2341,7 +2324,6 @@ function updateRings(prefix, macros, goals) {
   });
 }
 
-
 function getMostRecentWeight() {
   const weights = getData('weights') || [];
   if (!weights.length) return null;
@@ -2372,10 +2354,10 @@ function getFriendlyDayName(dateStr) {
 function startTrainingMode() {
   trainingMode = true;
   trainingStartTime = new Date().toISOString();
-  if (!trainingLabel) trainingLabel = 'Workout';
+  if (!)  = 'Workout';
   setData('trainingMode', trainingMode);
   setData('trainingStartTime', trainingStartTime);
-  setData('trainingLabel', trainingLabel);
+  setData('', );
   renderLift();
 }
 
@@ -2385,31 +2367,18 @@ function endTrainingMode() {
   renderLift();
 }
 
-function updateTrainingLabel(value) {
-  trainingLabel = (value || '').trim();
-  setData('trainingLabel', trainingLabel);
-  const select = document.getElementById('training-label-select');
-  if (select && trainingLabel && [...select.options].some(o => o.value === trainingLabel)) {
-    select.value = trainingLabel;
-  } else if (select && trainingLabel && ![...select.options].some(o => o.value === trainingLabel)) {
+ else if (select &&  && ![...select.options].some(o => o.value === )) {
     select.value = 'Other';
   }
   updateTrainingPanel();
 }
 
-function selectTrainingLabel(value) {
-  const input = document.getElementById('training-label-input');
-  if (value === 'Other') {
-    if (input) {
-      input.focus();
-      if (!input.value) input.value = trainingLabel && trainingLabel !== 'Other' ? trainingLabel : '';
-    }
-    trainingLabel = (input && input.value ? input.value : trainingLabel || '').trim();
+     = (input && input.value ? input.value :  || '').trim();
   } else {
-    trainingLabel = (value || '').trim();
+     = (value || '').trim();
     if (input && value && value !== 'Other') input.value = '';
   }
-  setData('trainingLabel', trainingLabel);
+  setData('', );
   updateTrainingPanel();
 }
 
@@ -2433,16 +2402,16 @@ function updateTrainingPanel() {
 
   const labelSelect = document.getElementById('training-label-select');
   if (labelInput) {
-    if (labelSelect && labelSelect.value !== 'Other' && [...labelSelect.options].some(o => o.value === trainingLabel)) {
+    if (labelSelect && labelSelect.value !== 'Other' && [...labelSelect.options].some(o => o.value === )) {
       labelInput.value = '';
     } else {
-      labelInput.value = trainingLabel || '';
+      labelInput.value =  || '';
     }
   }
   if (labelSelect) {
-    if ([...labelSelect.options].some(o => o.value === trainingLabel)) {
-      labelSelect.value = trainingLabel || '';
-    } else if (trainingLabel) {
+    if ([...labelSelect.options].some(o => o.value === )) {
+      labelSelect.value =  || '';
+    } else if () {
       labelSelect.value = 'Other';
     } else {
       labelSelect.value = '';
@@ -2456,10 +2425,10 @@ function updateTrainingPanel() {
     const started = trainingStartTime
       ? new Date(trainingStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       : '—';
-    document.getElementById('training-day-title').textContent = trainingLabel || 'Workout Session';
+    document.getElementById('training-day-title').textContent = 'Workout Session';
     document.getElementById('training-session-subtitle').textContent = 'High-focus workout logging mode is active';
     document.getElementById('training-meta-day').textContent = dayText;
-    document.getElementById('training-meta-label').textContent = trainingLabel || 'Workout';
+    document.getElementById('training-meta-label').textContent =  || 'Workout';
     document.getElementById('training-meta-start').textContent = started;
   }
 }
