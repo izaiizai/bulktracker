@@ -1337,6 +1337,45 @@
   }
 
 
+
+  .danger-card {
+    border-color: rgba(255,59,48,0.55);
+    box-shadow: 0 0 0 1px rgba(255,59,48,0.12), 0 0 22px rgba(255,59,48,0.10);
+    background: linear-gradient(180deg, rgba(46,10,10,0.96), rgba(26,8,8,0.96));
+  }
+
+  .danger-icon {
+    background: linear-gradient(180deg, rgba(255,59,48,0.20), rgba(56,10,10,0.95));
+    border: 1px solid rgba(255,59,48,0.48);
+  }
+
+  .danger-title {
+    color: #ffb3ab;
+  }
+
+  .danger-note {
+    color: #ffd3ce;
+  }
+
+  .btn-danger {
+    width: 100%;
+    background: linear-gradient(180deg, rgba(255,59,48,0.96), rgba(166,22,12,0.96));
+    color: #fff7f5;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.03em;
+    box-shadow: 0 0 18px rgba(255,59,48,0.22);
+  }
+
+  .btn-danger:active {
+    opacity: 0.92;
+  }
+
 </style>
 </head>
 <body>
@@ -1758,6 +1797,20 @@
         Manual goals, macro calculator inputs, time zone, and unit settings will be backed up and restored automatically.
       </div>
       <div id="prefs-status" class="sync-note"></div>
+    </div>
+
+    <div class="card danger-card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon danger-icon">⚠️</div>
+        <span class="card-title danger-title">Emergency Sheets Overwrite</span>
+      </div>
+      <div class="calc-note danger-note" style="text-align:left; margin-bottom:12px;">
+        Review the app first. This will replace the saved Google Sheets logs with exactly what is currently stored in this browser.
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="btn-danger" onclick="overwriteSheetsFromApp()">Overwrite Sheets from App</button>
+      </div>
+      <div id="overwrite-status" class="sync-note"></div>
     </div>
 
     <div class="card" style="margin-bottom:8px;">
@@ -3553,6 +3606,82 @@ async function syncPreferencesToSheets(silent = true) {
   } catch (e) {
     console.error(e);
     if (!silent) setPrefsStatus('Could not back up preferences', false);
+    return false;
+  }
+}
+
+
+function setOverwriteStatus(message, ok = true) {
+  const el = document.getElementById('overwrite-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
+}
+
+function collectAllDatesFromLocal() {
+  const dates = new Set();
+  const weights = getData('weights') || [];
+  weights.forEach(w => { if (w && w.date) dates.add(String(w.date)); });
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k) continue;
+    if (k.startsWith('meals_') || k.startsWith('sessions_')) {
+      const date = k.split('_')[1];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date)) dates.add(date);
+    }
+  }
+  return [...dates].sort();
+}
+
+function collectFullAppState() {
+  const dates = collectAllDatesFromLocal();
+  const dailyMeals = {};
+  const dailySessions = {};
+  dates.forEach(date => {
+    const meals = getData('meals_' + date) || [];
+    const sessions = getData('sessions_' + date) || [];
+    if (meals.length) dailyMeals[date] = meals;
+    if (sessions.length) dailySessions[date] = sessions;
+  });
+  return {
+    weights: getData('weights') || [],
+    dailyMeals,
+    dailySessions,
+    preferences: collectPreferencesPayload()
+  };
+}
+
+async function overwriteSheetsFromApp() {
+  if (typeof SHEETS_URL === 'undefined' || !SHEETS_URL) {
+    setOverwriteStatus('Sheets URL is missing', false);
+    return false;
+  }
+
+  const ok = confirm('Overwrite Google Sheets with the current app data in this browser? This replaces saved Sheets logs.');
+  if (!ok) return false;
+
+  const payload = collectFullAppState();
+  setOverwriteStatus('Overwriting Google Sheets from this app state...', true);
+
+  try {
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'overwriteAll',
+        appState: payload
+      })
+    });
+    const data = await res.json();
+    if (!data || !data.success) {
+      setOverwriteStatus((data && data.error) ? `Overwrite failed: ${data.error}` : 'Overwrite failed', false);
+      return false;
+    }
+    setOverwriteStatus('Google Sheets was overwritten with the current app data.', true);
+    return true;
+  } catch (e) {
+    console.error(e);
+    setOverwriteStatus('Could not overwrite Google Sheets', false);
     return false;
   }
 }
