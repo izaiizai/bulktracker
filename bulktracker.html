@@ -1614,20 +1614,189 @@
 </div>
 
 
+
 <div id="page-settings" class="page">
   <div class="header">
     <h1>Settings</h1>
     <div class="subtitle">Preferences, tools, and recovery</div>
   </div>
   <div class="scroll-area">
-    <div class="card-icon icon-green">🧮</div>
-    <div class="card-icon icon-teal">🕒</div>
-    <div class="card-icon icon-orange">🛠️</div>
-    <div class="card-icon icon-teal">🎯</div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:12px;">
+        <div class="card-icon icon-green">🧮</div>
+        <span class="card-title">Macro Calculator</span>
+        <span id="active-mode-badge" style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.8px;padding:4px 10px;border-radius:20px;background:var(--green-bg);color:var(--green);">BULK</span>
+      </div>
+
+      <div class="unit-toggle">
+        <button class="unit-btn active" id="unit-imperial" onclick="setUnit('imperial')">lbs · ft/in</button>
+        <button class="unit-btn" id="unit-metric" onclick="setUnit('metric')">kg · cm</button>
+      </div>
+
+      <div class="mode-toggle">
+        <div class="mode-btn bulk-active" id="mode-bulk" onclick="setMode('bulk')">
+          <span class="mode-icon">📈</span>
+          <span class="mode-label">Bulk</span>
+          <span class="mode-desc">+350 kcal surplus</span>
+        </div>
+        <div class="mode-btn" id="mode-lean" onclick="setMode('lean')">
+          <span class="mode-icon">🔥</span>
+          <span class="mode-label">Lean</span>
+          <span class="mode-desc">−350 kcal deficit</span>
+        </div>
+      </div>
+
+      <div class="calc-input-row">
+        <div class="calc-field" style="flex:0.6;">
+          <label>Age</label>
+          <input type="number" id="calc-age" placeholder="25" min="10" max="100" oninput="calcMacros()">
+        </div>
+        <div class="calc-field" style="flex:1;">
+          <label id="weight-lbl">Weight (lbs)</label>
+          <input type="number" id="calc-weight" placeholder="165" step="0.1" oninput="calcMacros()">
+        </div>
+        <div class="calc-field" style="flex:0.5;">
+          <label>Sex</label>
+          <select id="calc-sex" onchange="calcMacros()">
+            <option value="female">♀</option>
+            <option value="male">♂</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calc-input-row" id="height-imperial-row">
+        <div class="calc-field">
+          <label>Height (ft)</label>
+          <input type="number" id="calc-ft" placeholder="5" min="3" max="8" oninput="calcMacros()">
+        </div>
+        <div class="calc-field">
+          <label>Height (in)</label>
+          <input type="number" id="calc-in" placeholder="9" min="0" max="11" oninput="calcMacros()">
+        </div>
+      </div>
+      <div class="calc-input-row" id="height-metric-row" style="display:none;">
+        <div class="calc-field">
+          <label>Height (cm)</label>
+          <input type="number" id="calc-cm" placeholder="175" oninput="calcMacros()">
+        </div>
+      </div>
+
+      <div class="calc-field" style="margin-bottom:10px;">
+        <label>Activity Level</label>
+        <select id="calc-activity" onchange="calcMacros()">
+          <option value="1.2">Sedentary (desk job, no gym)</option>
+          <option value="1.375">Lightly active (1–3x/week)</option>
+          <option value="1.55" selected>Moderately active (3–5x/week)</option>
+          <option value="1.725">Very active (6–7x/week)</option>
+          <option value="1.9">Athlete (2x/day training)</option>
+        </select>
+      </div>
+
+      <div class="calc-result" id="calc-result">
+        <div class="result-title" id="result-mode-label">📈 Bulk Mode — Calculated Goals</div>
+        <div class="result-tdee" id="result-tdee-line">TDEE: — kcal/day</div>
+        <div class="result-macros">
+          <div class="result-macro">
+            <div class="rv" id="res-cal" style="color:var(--green)">—</div>
+            <div class="rl">Calories</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-pro" style="color:#4aa3f5">—</div>
+            <div class="rl">Protein (g)</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-carb" style="color:var(--orange)">—</div>
+            <div class="rl">Carbs (g)</div>
+          </div>
+          <div class="result-macro">
+            <div class="rv" id="res-fat" style="color:#e85a8a">—</div>
+            <div class="rl">Fat (g)</div>
+          </div>
+        </div>
+        <button class="btn-apply" id="btn-apply-goals" onclick="applyCalculatedGoals()">✓ Set as Daily Goals</button>
+        <div class="calc-note" id="calc-note"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-teal">🕒</div>
+        <span class="card-title">Log Time Zone</span>
+      </div>
+      <div class="calc-field" style="margin-bottom:10px;">
+        <label>Time zone (IANA)</label>
+        <input type="text" id="timezone-input" placeholder="America/Vancouver" style="width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; color:var(--text); font-size:14px; font-family:'DM Sans', sans-serif; outline:none;">
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="saveTimeZone()">Save Time Zone</button>
+        <button class="btn-cancel" style="padding:11px 14px; background:var(--surface2); border-radius:10px;" onclick="resetTimeZone()">Use Device</button>
+      </div>
+      <div id="timezone-summary" class="sync-note"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-orange">🛠️</div>
+        <span class="card-title">Data Migration Tool</span>
+      </div>
+      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
+        Move meals and workout sessions from one logged day to another without retyping. Weight logs stay separate.
+      </div>
+
+      <div class="settings-stack-row">
+        <div class="calc-field">
+          <label>From date</label>
+          <select id="migrate-from-date" onchange="renderMigrationPreview()"></select>
+        </div>
+        <div class="calc-field">
+          <label>To date</label>
+          <input type="text" id="migrate-to-date" placeholder="YYYY-MM-DD" onchange="renderMigrationPreview()" oninput="renderMigrationPreview()">
+        </div>
+      </div>
+
+      <div class="settings-stack-row">
+        <div class="calc-field">
+          <label>Move</label>
+          <select id="migrate-type" onchange="renderMigrationPreview()">
+            <option value="both">Meals + Lifts</option>
+            <option value="meals">Meals only</option>
+            <option value="sessions">Lifts only</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="migration-preview" class="sync-note" style="margin-bottom:10px;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="migrateLogs()">Move Logs</button>
+        <button class="btn-cancel" style="padding:11px 14px; background:var(--surface2); border-radius:10px;" onclick="populateMigrationTool()">Refresh Dates</button>
+      </div>
+      <div id="migration-status" class="sync-note"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
+        <div class="card-icon icon-teal">🎯</div>
+        <span class="card-title">Manual Goal Targets</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);" id="manual-goals-toggle">▼ edit</span>
+      </div>
+      <div id="manual-goals-body" style="display:none;">
+        <div class="goals-section" style="padding:0;">
+          <div class="goals-row"><label>Calories (kcal)</label><input type="number" id="goal-cal" value="3000"></div>
+          <div class="goals-row"><label>Protein (g)</label><input type="number" id="goal-pro" value="200"></div>
+          <div class="goals-row"><label>Carbs (g)</label><input type="number" id="goal-carb" value="350"></div>
+          <div class="goals-row"><label>Fat (g)</label><input type="number" id="goal-fat" value="80"></div>
+          <button class="btn-save-goals" onclick="saveGoals()">Save Goals</button>
+        </div>
+      </div>
+      <div id="manual-goals-summary" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text2);" id="goals-summary-text"></span>
+      </div>
+    </div>
+
     <div style="height:12px;"></div>
   </div>
 </div>
-
 <div id="page-progress" class="page">
   <div class="header">
     <h1>Trends</h1>
