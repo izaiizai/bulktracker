@@ -1141,202 +1141,29 @@
     text-transform: uppercase;
   }
 
-  .training-toolbar {
-    display: flex;
-    gap: 8px;
-    padding: 0 16px 10px;
+
+
+
+  #page-lift .search-bar,
+  #page-lift .exercise-form,
+  #page-lift .ex-card,
+  #page-lift .btn-add-ex {
+    border-color: rgba(255,59,48,0.38);
+    box-shadow: 0 0 0 1px rgba(255,206,0,0.05), 0 0 14px rgba(255,59,48,0.06);
   }
 
-  .training-btn {
-    flex: 1;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface2);
-    color: var(--text2);
-    padding: 12px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    text-transform: uppercase;
+  #page-lift .search-bar {
+    background: linear-gradient(180deg, rgba(50,14,14,0.92), rgba(33,10,10,0.92));
   }
 
-  .training-btn.active {
-    background: linear-gradient(180deg, rgba(255,59,48,0.18), rgba(45,12,12,0.95));
-    border-color: rgba(255,59,48,0.45);
-    color: #fff2f0;
-    box-shadow: 0 0 16px rgba(255,59,48,0.18);
+  #page-lift .section-label { color: #ffb2a8; }
+  #page-lift .ex-tag { color: #ffcc00; }
+
+  #page-lift .btn-add-set {
+    color: #ffd5cf;
+    border-color: rgba(255,59,48,0.34);
+    background: linear-gradient(180deg, rgba(60,14,14,0.78), rgba(36,10,10,0.78));
   }
-
-  .training-panel {
-    margin: 0 16px 12px;
-    background: linear-gradient(180deg, rgba(46,10,10,0.96), rgba(26,8,8,0.96));
-    border: 1px solid rgba(255,59,48,0.35);
-    border-radius: 14px;
-    padding: 14px;
-    color: #fff2f0;
-    position: relative;
-    overflow: hidden;
-    display: none;
-  }
-
-  .training-panel.active { display: block; }
-
-  .training-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      rgba(255, 206, 0, 0.12) 0px,
-      rgba(255, 206, 0, 0.12) 10px,
-      rgba(255, 59, 48, 0.10) 10px,
-      rgba(255, 59, 48, 0.10) 20px
-    );
-    opacity: 0.28;
-    pointer-events: none;
-  }
-
-  .training-panel > * { position: relative; z-index: 1; }
-
-  .training-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 0.18em;
-    padding: 4px 8px;
-    border: 1px solid rgba(255,255,255,0.22);
-    background: rgba(0,0,0,0.22);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-  }
-
-  .training-title {
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: 0.06em;
-    margin-bottom: 2px;
-    font-family: 'Rajdhani', sans-serif;
-  }
-
-  .training-subtitle {
-    font-size: 12px;
-    color: #ffd9d4;
-    margin-bottom: 10px;
-  }
-
-  .training-meta {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .training-meta-box {
-    background: rgba(0,0,0,0.22);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 10px 8px;
-  }
-
-  .training-meta-box .tm-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: #ffc3b8;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-
-  .training-meta-box .tm-value {
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff7f5;
-  }
-
-
-  .ex-last-session {
-    margin-top: 4px;
-    font-size: 11px;
-    color: #ffd36b;
-    letter-spacing: 0.02em;
-  }
-
-  #page-lift.training-live .search-bar,
-  #page-lift.training-live .exercise-form,
-  #page-lift.training-live .ex-card,
-  #page-lift.training-live .btn-add-ex {
-    border-color: rgba(255,59,48,0.25);
-    box-shadow: 0 0 0 1px rgba(255,206,0,0.04);
-  }
-
-  #page-lift.training-live .section-label { color: #ffb2a8; }
-  #page-lift.training-live .ex-tag { color: #ffcc00; }
-  #page-lift.training-live .btn-add-set {
-    color: #ffb2a8;
-    border-color: rgba(255,59,48,0.22);
-    background: rgba(42,16,16,0.65);
-  }
-
-  @media (max-width: 380px) {
-    .training-meta {
-      grid-template-columns: 1fr;
-    }
-    .nav-item span:last-child {
-      font-size: 9px;
-      letter-spacing: 0.6px;
-    }
-  }
-
-
-  .training-btn.active {
-    background: linear-gradient(180deg, rgba(255,59,48,0.34), rgba(66,10,10,0.98)) !important;
-    border-color: rgba(255,59,48,0.72) !important;
-    color: #fff7f5 !important;
-    box-shadow: 0 0 22px rgba(255,59,48,0.34), inset 0 1px 0 rgba(255,255,255,0.14) !important;
-  }
-
-  .training-panel {
-    background: linear-gradient(180deg, rgba(74,8,8,0.98), rgba(24,4,4,0.98)) !important;
-    border: 1px solid rgba(255,59,48,0.62) !important;
-    box-shadow: 0 0 0 1px rgba(255,59,48,0.12), 0 0 28px rgba(255,59,48,0.18) !important;
-  }
-
-  .training-panel::before {
-    background: repeating-linear-gradient(
-      -45deg,
-      rgba(255, 206, 0, 0.22) 0px,
-      rgba(255, 206, 0, 0.22) 12px,
-      rgba(255, 40, 40, 0.22) 12px,
-      rgba(255, 40, 40, 0.22) 24px
-    ) !important;
-    opacity: 0.52 !important;
-  }
-
-  .training-badge {
-    border: 1px solid rgba(255,255,255,0.34) !important;
-    background: rgba(0,0,0,0.34) !important;
-    box-shadow: 0 0 12px rgba(255,59,48,0.18);
-  }
-
-  #page-lift.training-live .search-bar,
-  #page-lift.training-live .exercise-form,
-  #page-lift.training-live .ex-card,
-  #page-lift.training-live .btn-add-ex {
-    border-color: rgba(255,59,48,0.45) !important;
-    box-shadow: 0 0 0 1px rgba(255,206,0,0.08), 0 0 16px rgba(255,59,48,0.08);
-  }
-
-  #page-lift.training-live .search-bar {
-    background: linear-gradient(180deg, rgba(50,14,14,0.96), rgba(33,10,10,0.96));
-  }
-
-  #page-lift.training-live .btn-add-set {
-    color: #ffd5cf !important;
-    border-color: rgba(255,59,48,0.4) !important;
-    background: linear-gradient(180deg, rgba(60,14,14,0.82), rgba(36,10,10,0.82)) !important;
-  }
-
-
 
   .danger-card {
     border-color: rgba(255,59,48,0.55);
@@ -1597,36 +1424,6 @@
     <button onclick="shiftDate(1,'lift')">›</button>
   </div>
 
-  <div class="training-toolbar">
-    <button class="training-btn" id="training-start-btn" onclick="startTrainingMode()">Start Training Mode</button>
-    <button class="training-btn" id="training-end-btn" onclick="endTrainingMode()">End Training Mode</button>
-  </div>
-
-  <div class="training-label-row" id="training-label-row">
-    <label for="training-label-input">Session type</label>
-    <input type="text" id="training-label-input" placeholder="Push, Pull, Legs, Core, Full Body..." oninput="updateTrainingLabel(this.value)">
-  </div>
-
-  <div class="training-panel" id="training-panel">
-    <div class="training-badge">Emergency Training Mode</div>
-    <div class="training-title" id="training-day-title">Workout Session</div>
-    <div class="training-subtitle" id="training-session-subtitle">High-focus workout logging mode is active</div>
-    <div class="training-meta">
-      <div class="training-meta-box">
-        <div class="tm-label">Day</div>
-        <div class="tm-value" id="training-meta-day">—</div>
-      </div>
-      <div class="training-meta-box">
-        <div class="tm-label">Session</div>
-        <div class="tm-value" id="training-meta-label">—</div>
-      </div>
-      <div class="training-meta-box">
-        <div class="tm-label">Started</div>
-        <div class="tm-value" id="training-meta-start">—</div>
-      </div>
-    </div>
-  </div>
-
   <div class="scroll-area">
     <div class="section-label">Select Exercise</div>
     <div class="search-bar">
@@ -1657,7 +1454,7 @@
 <div id="page-settings" class="page">
   <div class="header">
     <h1>Settings</h1>
-    <div class="subtitle">Preferences and recovery</div>
+    <div class="subtitle">Goals, backup, and restore</div>
   </div>
   <div class="scroll-area">
 
@@ -1759,6 +1556,26 @@
     </div>
 
     <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
+        <div class="card-icon icon-teal">🎯</div>
+        <span class="card-title">Manual Goal Targets</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);" id="manual-goals-toggle">▼ edit</span>
+      </div>
+      <div id="manual-goals-body" style="display:none;">
+        <div class="goals-section" style="padding:0;">
+          <div class="goals-row"><label>Calories (kcal)</label><input type="number" id="goal-cal" value="3000"></div>
+          <div class="goals-row"><label>Protein (g)</label><input type="number" id="goal-pro" value="200"></div>
+          <div class="goals-row"><label>Carbs (g)</label><input type="number" id="goal-carb" value="350"></div>
+          <div class="goals-row"><label>Fat (g)</label><input type="number" id="goal-fat" value="80"></div>
+          <button class="btn-save-goals" onclick="saveGoals()">Save Goals</button>
+        </div>
+      </div>
+      <div id="manual-goals-summary" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text2);" id="goals-summary-text"></span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px;">
         <div class="card-icon icon-teal">🕒</div>
         <span class="card-title">Log Time Zone</span>
@@ -1780,10 +1597,10 @@
         <span class="card-title">Restore from Sheets</span>
       </div>
       <div class="calc-note" style="text-align:left; margin-bottom:12px;">
-        This browser can restore your saved logs from Google Sheets. If local data is empty, the app will try automatically on startup.
+        Restore saved logs from Google Sheets into this browser. Use this after fixing duplicate Sheet data or when moving to a new device.
       </div>
       <div style="display:flex; gap:8px; margin-bottom:8px;">
-        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', false)">Restore Now</button>
+        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', false)">Restore Logs</button>
       </div>
       <div id="restore-status" class="sync-note"></div>
     </div>
@@ -1794,8 +1611,9 @@
         <span class="card-title">Preferences Backup</span>
       </div>
       <div class="calc-note" style="text-align:left; margin-bottom:12px;">
-        Manual goals, macro calculator inputs, time zone, and unit settings will be backed up and restored automatically.
+        Back up manual goals, macro calculator inputs, age, height, time zone, and unit settings to Google Sheets when you choose.
       </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;"><button class="btn-save-goals" style="margin-top:0;" onclick="backupPreferencesNow()">Back Up Preferences Now</button></div>
       <div id="prefs-status" class="sync-note"></div>
     </div>
 
@@ -1813,40 +1631,8 @@
       <div id="overwrite-status" class="sync-note"></div>
     </div>
 
-    <div class="card" style="margin-bottom:8px;">
-      <div class="card-header" style="margin-bottom:10px;">
-        <div class="card-icon icon-green">☁️</div>
-        <span class="card-title">Restore from Sheets</span>
-      </div>
-      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
-        This browser can restore your saved logs from Google Sheets. If local data is empty, the app will try automatically on startup.
-      </div>
-      <div style="display:flex; gap:8px; margin-bottom:8px;">
-        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', true)">Restore Now</button>
-      </div>
-      <div id="restore-status" class="sync-note"></div>
-    </div>
-<div class="card" style="margin-bottom:8px;">
-      <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
-        <div class="card-icon icon-teal">🎯</div>
-        <span class="card-title">Manual Goal Targets</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text3);" id="manual-goals-toggle">▼ edit</span>
-      </div>
-      <div id="manual-goals-body" style="display:none;">
-        <div class="goals-section" style="padding:0;">
-          <div class="goals-row"><label>Calories (kcal)</label><input type="number" id="goal-cal" value="3000"></div>
-          <div class="goals-row"><label>Protein (g)</label><input type="number" id="goal-pro" value="200"></div>
-          <div class="goals-row"><label>Carbs (g)</label><input type="number" id="goal-carb" value="350"></div>
-          <div class="goals-row"><label>Fat (g)</label><input type="number" id="goal-fat" value="80"></div>
-          <button class="btn-save-goals" onclick="saveGoals()">Save Goals</button>
-        </div>
-      </div>
-      <div id="manual-goals-summary" style="display:flex;gap:8px;flex-wrap:wrap;">
-        <span style="font-size:12px;color:var(--text2);" id="goals-summary-text"></span>
-      </div>
-    </div>
-
-    <div style="height:12px;"></div>
+    
+<div style="height:12px;"></div>
   </div>
 </div>
 <div id="page-progress" class="page">
@@ -1954,8 +1740,6 @@ let weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
 let liftDisplayUnit = getData('liftDisplayUnit') || 'kg';
 let weightPeriod = 7, calPeriod = 7;
 let charts = {};
-let trainingMode = getData('trainingMode') || false;
-let trainingStartTime = getData('trainingStartTime') || '';
 let logTimeZone = getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
 function round1(value) {
@@ -2020,7 +1804,6 @@ function saveTimeZone() {
     logTimeZone = value;
     setData('logTimeZone', value);
     updateTimeZoneSummary(true);
-    syncPreferencesToSheets(false);
     renderHome();
     renderWeight();
     renderFood();
@@ -2035,7 +1818,6 @@ function saveTimeZone() {
 function resetTimeZone() {
   logTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   setData('logTimeZone', logTimeZone);
-  syncPreferencesToSheets(false);
   const input = document.getElementById('timezone-input');
   if (input) input.value = logTimeZone;
   updateTimeZoneSummary(true);
@@ -2145,7 +1927,6 @@ function saveGoals() {
   renderHome();
   renderFood();
   updateGoalsSummary();
-  syncPreferencesToSheets(false);
   alert('Goals saved!');
 }
 
@@ -2412,7 +2193,7 @@ function getHomeGoalsSummaryText() {
 function renderSettings() {
   updateTimeZoneSummary(false);
   updateGoalsSummary();
-  setPrefsStatus('Preferences back up automatically when changed.', true);
+  setPrefsStatus('Preferences are local until you press Back Up Preferences Now.', true);
 }
 
 function isValidDateKey(value) {
@@ -2425,51 +2206,7 @@ function getFriendlyDayName(dateStr) {
   return d.toLocaleDateString('en-US', { weekday: 'long' });
 }
 
-function startTrainingMode() {
-  trainingMode = true;
-  trainingStartTime = new Date().toISOString();
-  setData('trainingMode', trainingMode);
-  setData('trainingStartTime', trainingStartTime);
-  renderLift();
-}
 
-function endTrainingMode() {
-  trainingMode = false;
-  setData('trainingMode', trainingMode);
-  renderLift();
-}
-
-
-
-function updateTrainingPanel() {
-  const liftPage = document.getElementById('page-lift');
-  const panel = document.getElementById('training-panel');
-  const startBtn = document.getElementById('training-start-btn');
-  const endBtn = document.getElementById('training-end-btn');
-
-  if (!liftPage || !panel || !startBtn || !endBtn) return;
-
-  liftPage.classList.toggle('training-live', !!trainingMode);
-  panel.classList.toggle('active', !!trainingMode);
-  startBtn.classList.toggle('active', !!trainingMode);
-  endBtn.classList.toggle('active', !trainingMode);
-  startBtn.textContent = trainingMode ? 'Training Active' : 'Start Training Mode';
-  endBtn.textContent = trainingMode ? 'End Training Mode' : 'Training Standby';
-
-  if (trainingMode) {
-    const dk = shiftDateKey(dateOffsets.lift);
-    const dateObj = new Date(dk + 'T12:00:00');
-    const dayText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-    const started = trainingStartTime
-      ? new Date(trainingStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-      : '—';
-    document.getElementById('training-day-title').textContent = 'Workout Session';
-    document.getElementById('training-session-subtitle').textContent = 'High-focus workout logging mode is active';
-    document.getElementById('training-meta-day').textContent = dayText;
-    document.getElementById('training-meta-start').textContent = started;
-    document.getElementById('training-meta-label').textContent = 'Live';
-  }
-}
 
 function getLastSessionSummary(exerciseName, excludeDate) {
   const matches = [];
@@ -2758,7 +2495,6 @@ function deleteMeal(dk, idx) {
 function setLiftUnit(unit) {
   liftDisplayUnit = unit;
   setData('liftDisplayUnit', unit);
-  syncPreferencesToSheets(true);
   document.getElementById('lunit-kg').className  = 'page-unit-btn' + (unit === 'kg'  ? ' lift-active' : '');
   document.getElementById('lunit-lbs').className = 'page-unit-btn' + (unit === 'lbs' ? ' lift-active' : '');
   renderExerciseCards();
@@ -2768,7 +2504,6 @@ function renderLift() {
   const off = dateOffsets.lift;
   document.getElementById('lift-date-label').textContent = dateLabelInTimeZone(off);
   renderExerciseCards();
-  updateTrainingPanel();
 }
 
 function renderExerciseCards() {
@@ -2861,7 +2596,7 @@ function renderExerciseCards() {
         <div>
           <div class="ex-name">${sess.name}</div>
           <div class="ex-tag">${sess.muscle || ''}</div>
-          ${trainingMode ? `<div class="ex-last-session">${getLastSessionSummary(sess.name, dk) || 'Last: no previous session'}</div>` : ''}
+          ${getLastSessionSummary(sess.name, dk) ? `<div class="ex-last-session">${getLastSessionSummary(sess.name, dk)}</div>` : ''}
         </div>
         <button class="btn-del" onclick="deleteExercise('${dk}',${si})">✕</button>
       </div>
@@ -2927,7 +2662,6 @@ function deleteExercise(dk, idx) {
   renderExerciseCards();
   renderHome();
   syncToSheets(dk, 'lift');
-  updateTrainingPanel();
 }
 
 function addSet(dk, si) {
@@ -2939,7 +2673,6 @@ function addSet(dk, si) {
   renderExerciseCards();
   renderHome();
   syncToSheets(dk, 'lift');
-  updateTrainingPanel();
 }
 
 function deleteSet(dk, si, ri) {
@@ -2949,7 +2682,6 @@ function deleteSet(dk, si, ri) {
   renderExerciseCards();
   renderHome();
   syncToSheets(dk, 'lift');
-  updateTrainingPanel();
 }
 
 function updateSet(dk, si, ri, field, val) {
@@ -2959,8 +2691,7 @@ function updateSet(dk, si, ri, field, val) {
     setData('sessions_' + dk, sessions);
     renderHome();
     syncToSheets(dk, 'lift');
-    updateTrainingPanel();
-  }
+    }
 }
 
 function updateSetWeight(dk, si, ri, val) {
@@ -2972,8 +2703,7 @@ function updateSetWeight(dk, si, ri, val) {
     setData('sessions_' + dk, sessions);
     renderHome();
     syncToSheets(dk, 'lift');
-    updateTrainingPanel();
-  }
+    }
 }
 
 function getPastDates(n) {
@@ -3401,7 +3131,7 @@ function hasAnyLocalLogs() {
 
 function clearLocalLogsOnly() {
   const preserve = {};
-  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone', 'trainingMode', 'trainingStartTime'];
+  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone'];
   keepKeys.forEach(k => {
     const v = localStorage.getItem(k);
     if (v !== null) preserve[k] = v;
@@ -3529,7 +3259,7 @@ function hasAnyLocalLogs() {
 
 function clearLocalLogsOnly() {
   const preserve = {};
-  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone', 'trainingMode', 'trainingStartTime'];
+  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone'];
   keepKeys.forEach(k => {
     const v = localStorage.getItem(k);
     if (v !== null) preserve[k] = v;
@@ -3583,6 +3313,10 @@ function applyPreferencesPayload(prefs) {
   setLiftUnit(liftDisplayUnit);
   updateTimeZoneSummary(false);
   updateGoalsSummary();
+}
+
+async function backupPreferencesNow() {
+  await syncPreferencesToSheets(false);
 }
 
 async function syncPreferencesToSheets(silent = true) {
@@ -3694,8 +3428,6 @@ async function init() {
   setLiftUnit(liftDisplayUnit);
   renderHome();
   updateGoalsSummary();
-  updateTrainingPanel();
-  await autoRestoreIfEmpty();
   renderSettings();
 }
 
