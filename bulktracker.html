@@ -1618,7 +1618,7 @@
 <div id="page-settings" class="page">
   <div class="header">
     <h1>Settings</h1>
-    <div class="subtitle">Preferences, tools, and recovery</div>
+    <div class="subtitle">Preferences and recovery</div>
   </div>
   <div class="scroll-area">
 
@@ -1744,51 +1744,36 @@
         This browser can restore your saved logs from Google Sheets. If local data is empty, the app will try automatically on startup.
       </div>
       <div style="display:flex; gap:8px; margin-bottom:8px;">
-        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', true)">Restore Now</button>
+        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', false)">Restore Now</button>
       </div>
       <div id="restore-status" class="sync-note"></div>
     </div>
 
     <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px;">
-        <div class="card-icon icon-orange">🛠️</div>
-        <span class="card-title">Data Migration Tool</span>
+        <div class="card-icon icon-teal">💾</div>
+        <span class="card-title">Preferences Backup</span>
       </div>
       <div class="calc-note" style="text-align:left; margin-bottom:12px;">
-        Move meals and workout sessions from one logged day to another without retyping. Weight logs stay separate.
+        Manual goals, macro calculator inputs, time zone, and unit settings will be backed up and restored automatically.
       </div>
-
-      <div class="settings-stack-row">
-        <div class="calc-field">
-          <label>From date</label>
-          <select id="migrate-from-date" onchange="renderMigrationPreview()"></select>
-        </div>
-        <div class="calc-field">
-          <label>To date</label>
-          <input type="text" id="migrate-to-date" placeholder="YYYY-MM-DD" onchange="renderMigrationPreview()" oninput="renderMigrationPreview()">
-        </div>
-      </div>
-
-      <div class="settings-stack-row">
-        <div class="calc-field">
-          <label>Move</label>
-          <select id="migrate-type" onchange="renderMigrationPreview()">
-            <option value="both">Meals + Lifts</option>
-            <option value="meals">Meals only</option>
-            <option value="sessions">Lifts only</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="migration-preview" class="sync-note" style="margin-bottom:10px;"></div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn-save-goals" style="margin-top:0;" onclick="migrateLogs()">Move Logs</button>
-        <button class="btn-cancel" style="padding:11px 14px; background:var(--surface2); border-radius:10px;" onclick="populateMigrationTool()">Refresh Dates</button>
-      </div>
-      <div id="migration-status" class="sync-note"></div>
+      <div id="prefs-status" class="sync-note"></div>
     </div>
 
     <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-green">☁️</div>
+        <span class="card-title">Restore from Sheets</span>
+      </div>
+      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
+        This browser can restore your saved logs from Google Sheets. If local data is empty, the app will try automatically on startup.
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', true)">Restore Now</button>
+      </div>
+      <div id="restore-status" class="sync-note"></div>
+    </div>
+<div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px; cursor:pointer;" onclick="toggleManualGoals()">
         <div class="card-icon icon-teal">🎯</div>
         <span class="card-title">Manual Goal Targets</span>
@@ -1982,13 +1967,13 @@ function saveTimeZone() {
     logTimeZone = value;
     setData('logTimeZone', value);
     updateTimeZoneSummary(true);
+    syncPreferencesToSheets(false);
     renderHome();
     renderWeight();
     renderFood();
     renderLift();
     renderProgress();
-    populateMigrationTool();
-  } catch (e) {
+    } catch (e) {
     summary.textContent = 'Invalid time zone. Example: America/Vancouver';
     summary.className = 'sync-note sync-fail';
   }
@@ -1997,6 +1982,7 @@ function saveTimeZone() {
 function resetTimeZone() {
   logTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   setData('logTimeZone', logTimeZone);
+  syncPreferencesToSheets(false);
   const input = document.getElementById('timezone-input');
   if (input) input.value = logTimeZone;
   updateTimeZoneSummary(true);
@@ -2005,7 +1991,6 @@ function resetTimeZone() {
   renderFood();
   renderLift();
   renderProgress();
-  populateMigrationTool();
 }
 
 function updateTimeZoneSummary(saved = false) {
@@ -2023,132 +2008,9 @@ function updateTimeZoneSummary(saved = false) {
   summary.className = 'sync-note' + (saved ? ' sync-ok' : '');
 }
 
-function allStoredDateKeys() {
-  const keys = new Set();
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (!k) continue;
-    if (k.startsWith('meals_') || k.startsWith('sessions_')) {
-      const dateKey = k.split('_')[1];
-      if (/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) keys.add(dateKey);
-    }
-  }
-  return [...keys].sort();
-}
 
-function populateMigrationTool() {
-  const fromSel = document.getElementById('migrate-from-date');
-  const toInput = document.getElementById('migrate-to-date');
-  if (!fromSel || !toInput) return;
 
-  const dates = allStoredDateKeys();
-  fromSel.innerHTML = '';
-  if (!dates.length) {
-    fromSel.innerHTML = '<option value="">No stored dates</option>';
-    document.getElementById('migration-preview').textContent = 'No meals or lifts found to migrate.';
-    return;
-  }
 
-  dates.forEach(d => {
-    const opt = document.createElement('option');
-    opt.value = d;
-    opt.textContent = d;
-    fromSel.appendChild(opt);
-  });
-
-  if (!toInput.value) toInput.value = shiftDateKey(0);
-  renderMigrationPreview();
-}
-
-function renderMigrationPreview() {
-  const from = document.getElementById('migrate-from-date')?.value;
-  const to = document.getElementById('migrate-to-date')?.value;
-  const type = document.getElementById('migrate-type')?.value || 'both';
-  const preview = document.getElementById('migration-preview');
-  if (!preview) return;
-
-  if (!from || !to) {
-    preview.textContent = 'Choose source and destination dates.';
-    return;
-  }
-  if (!isValidDateKey(to)) {
-    preview.textContent = 'Destination date must use YYYY-MM-DD.';
-    return;
-  }
-  if (from === to) {
-    preview.textContent = 'Source and destination dates are the same.';
-    return;
-  }
-
-  const meals = getData('meals_' + from) || [];
-  const sessions = getData('sessions_' + from) || [];
-  const mealCount = meals.length;
-  const sessionCount = sessions.length;
-  const setCount = sessions.reduce((a, s) => a + ((s.sets || []).length), 0);
-
-  let parts = [];
-  if (type === 'both' || type === 'meals') parts.push(`${mealCount} meal${mealCount !== 1 ? 's' : ''}`);
-  if (type === 'both' || type === 'sessions') parts.push(`${sessionCount} exercise${sessionCount !== 1 ? 's' : ''}, ${setCount} set${setCount !== 1 ? 's' : ''}`);
-
-  preview.textContent = `Move ${parts.join(' and ')} from ${from} to ${to}. Existing logs on ${to} will be kept, and moved logs will be appended.`;
-}
-
-function migrateLogs() {
-  const from = document.getElementById('migrate-from-date')?.value;
-  const to = document.getElementById('migrate-to-date')?.value;
-  const type = document.getElementById('migrate-type')?.value || 'both';
-  const status = document.getElementById('migration-status');
-
-  if (!from || !to) {
-    status.textContent = 'Choose both dates first.';
-    status.className = 'sync-note sync-fail';
-    return;
-  }
-  if (!isValidDateKey(to)) {
-    status.textContent = 'Destination date must use YYYY-MM-DD.';
-    status.className = 'sync-note sync-fail';
-    return;
-  }
-  if (from === to) {
-    status.textContent = 'Source and destination cannot be the same date.';
-    status.className = 'sync-note sync-fail';
-    return;
-  }
-
-  let movedMeals = 0;
-  let movedSessions = 0;
-
-  if (type === 'both' || type === 'meals') {
-    const fromMeals = getData('meals_' + from) || [];
-    const toMeals = getData('meals_' + to) || [];
-    if (fromMeals.length) {
-      setData('meals_' + to, [...toMeals, ...fromMeals]);
-      localStorage.removeItem('meals_' + from);
-      movedMeals = fromMeals.length;
-    }
-  }
-
-  if (type === 'both' || type === 'sessions') {
-    const fromSessions = getData('sessions_' + from) || [];
-    const toSessions = getData('sessions_' + to) || [];
-    if (fromSessions.length) {
-      setData('sessions_' + to, [...toSessions, ...fromSessions]);
-      localStorage.removeItem('sessions_' + from);
-      movedSessions = fromSessions.length;
-    }
-  }
-
-  renderHome();
-  renderFood();
-  renderLift();
-  renderProgress();
-  populateMigrationTool();
-  syncToSheets(to, 'home');
-  syncToSheets(from, 'home');
-
-  status.textContent = `Moved ${movedMeals} meal${movedMeals !== 1 ? 's' : ''} and ${movedSessions} exercise${movedSessions !== 1 ? 's' : ''}.`;
-  status.className = 'sync-note sync-ok';
-}
 
 Chart.defaults.color = '#5a4a7a';
 Chart.defaults.borderColor = '#3a2a5a';
@@ -2230,6 +2092,7 @@ function saveGoals() {
   renderHome();
   renderFood();
   updateGoalsSummary();
+  syncPreferencesToSheets(false);
   alert('Goals saved!');
 }
 
@@ -2496,7 +2359,7 @@ function getHomeGoalsSummaryText() {
 function renderSettings() {
   updateTimeZoneSummary(false);
   updateGoalsSummary();
-  populateMigrationTool();
+  setPrefsStatus('Preferences back up automatically when changed.', true);
 }
 
 function isValidDateKey(value) {
@@ -2842,6 +2705,7 @@ function deleteMeal(dk, idx) {
 function setLiftUnit(unit) {
   liftDisplayUnit = unit;
   setData('liftDisplayUnit', unit);
+  syncPreferencesToSheets(true);
   document.getElementById('lunit-kg').className  = 'page-unit-btn' + (unit === 'kg'  ? ' lift-active' : '');
   document.getElementById('lunit-lbs').className = 'page-unit-btn' + (unit === 'lbs' ? ' lift-active' : '');
   renderExerciseCards();
@@ -3515,6 +3379,8 @@ function normalizeImportedDate(value) {
 function applyImportedData(payload, mode = 'merge') {
   if (mode === 'replace') clearLocalLogsOnly();
 
+  if (payload.preferences) applyPreferencesPayload(payload.preferences);
+
   const importedWeights = Array.isArray(payload.weights) ? payload.weights : [];
   const importedMeals = payload.dailyMeals || {};
   const importedSessions = payload.dailySessions || {};
@@ -3571,8 +3437,7 @@ async function loadFromSheets(mode = 'merge', silent = false) {
     renderLift();
     renderProgress();
     renderSettings();
-    populateMigrationTool();
-
+  
     const mealDays = Object.keys(data.dailyMeals || {}).length;
     const sessionDays = Object.keys(data.dailySessions || {}).length;
     const weightCount = Array.isArray(data.weights) ? data.weights.length : 0;
@@ -3590,6 +3455,108 @@ async function autoRestoreIfEmpty() {
   await loadFromSheets('merge', false);
 }
 
+
+function setPrefsStatus(message, ok = true) {
+  const el = document.getElementById('prefs-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
+}
+
+function hasAnyLocalLogs() {
+  const weights = getData('weights') || [];
+  if (weights.length) return true;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k) continue;
+    if ((k.startsWith('meals_') || k.startsWith('sessions_')) && (getData(k) || []).length) return true;
+  }
+  return false;
+}
+
+function clearLocalLogsOnly() {
+  const preserve = {};
+  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone', 'trainingMode', 'trainingStartTime'];
+  keepKeys.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) preserve[k] = v;
+  });
+  localStorage.clear();
+  Object.entries(preserve).forEach(([k, v]) => localStorage.setItem(k, v));
+}
+
+function mergeUniqueObjects(existingArr, importedArr) {
+  const seen = new Set();
+  const out = [];
+  [...existingArr, ...importedArr].forEach(item => {
+    const key = JSON.stringify(item);
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(item);
+    }
+  });
+  return out;
+}
+
+function normalizeImportedDate(value) {
+  if (!value) return '';
+  return String(value).slice(0, 10);
+}
+
+function collectPreferencesPayload() {
+  return {
+    goals: getGoals(),
+    calcState: getData('calcState') || {},
+    weightDisplayUnit: getData('weightDisplayUnit') || 'lbs',
+    liftDisplayUnit: getData('liftDisplayUnit') || 'kg',
+    logTimeZone: getData('logTimeZone') || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+  };
+}
+
+function applyPreferencesPayload(prefs) {
+  if (!prefs || typeof prefs !== 'object') return;
+  if (prefs.goals) setData('goals', prefs.goals);
+  if (prefs.calcState) setData('calcState', prefs.calcState);
+  if (prefs.weightDisplayUnit) setData('weightDisplayUnit', prefs.weightDisplayUnit);
+  if (prefs.liftDisplayUnit) setData('liftDisplayUnit', prefs.liftDisplayUnit);
+  if (prefs.logTimeZone) setData('logTimeZone', prefs.logTimeZone);
+
+  weightDisplayUnit = getData('weightDisplayUnit') || 'lbs';
+  liftDisplayUnit = getData('liftDisplayUnit') || 'kg';
+  logTimeZone = getData('logTimeZone') || logTimeZone;
+  loadGoalsInputs();
+  loadCalcState();
+  setWeightUnitAll(weightDisplayUnit);
+  setLiftUnit(liftDisplayUnit);
+  updateTimeZoneSummary(false);
+  updateGoalsSummary();
+}
+
+async function syncPreferencesToSheets(silent = true) {
+  if (typeof SHEETS_URL === 'undefined' || !SHEETS_URL) return false;
+  try {
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'syncPreferences',
+        preferences: collectPreferencesPayload()
+      })
+    });
+    const data = await res.json();
+    if (!data || !data.success) {
+      if (!silent) setPrefsStatus((data && data.error) ? `Backup failed: ${data.error}` : 'Backup failed', false);
+      return false;
+    }
+    if (!silent) setPrefsStatus('Preferences backed up to Sheets.', true);
+    return true;
+  } catch (e) {
+    console.error(e);
+    if (!silent) setPrefsStatus('Could not back up preferences', false);
+    return false;
+  }
+}
+
 async function init() {
   loadGoalsInputs();
   loadCalcState();
@@ -3598,9 +3565,9 @@ async function init() {
   setLiftUnit(liftDisplayUnit);
   renderHome();
   updateGoalsSummary();
-  populateMigrationTool();
   updateTrainingPanel();
   await autoRestoreIfEmpty();
+  renderSettings();
 }
 
 init();
