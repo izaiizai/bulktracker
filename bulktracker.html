@@ -1737,6 +1737,20 @@
 
     <div class="card" style="margin-bottom:8px;">
       <div class="card-header" style="margin-bottom:10px;">
+        <div class="card-icon icon-green">☁️</div>
+        <span class="card-title">Restore from Sheets</span>
+      </div>
+      <div class="calc-note" style="text-align:left; margin-bottom:12px;">
+        This browser can restore your saved logs from Google Sheets. If local data is empty, the app will try automatically on startup.
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="btn-save-goals" style="margin-top:0;" onclick="loadFromSheets('merge', true)">Restore Now</button>
+      </div>
+      <div id="restore-status" class="sync-note"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:8px;">
+      <div class="card-header" style="margin-bottom:10px;">
         <div class="card-icon icon-orange">🛠️</div>
         <span class="card-title">Data Migration Tool</span>
       </div>
@@ -3449,7 +3463,134 @@ async function syncToSheets(date, scope = 'home') {
   }
 }
 
-function init() {
+
+function setRestoreStatus(message, ok = true) {
+  const el = document.getElementById('restore-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = 'sync-note ' + (ok ? 'sync-ok' : 'sync-fail');
+}
+
+function hasAnyLocalLogs() {
+  const weights = getData('weights') || [];
+  if (weights.length) return true;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k) continue;
+    if ((k.startsWith('meals_') || k.startsWith('sessions_')) && (getData(k) || []).length) return true;
+  }
+  return false;
+}
+
+function clearLocalLogsOnly() {
+  const preserve = {};
+  const keepKeys = ['goals', 'calcState', 'weightDisplayUnit', 'liftDisplayUnit', 'logTimeZone', 'trainingMode', 'trainingStartTime'];
+  keepKeys.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) preserve[k] = v;
+  });
+  localStorage.clear();
+  Object.entries(preserve).forEach(([k, v]) => localStorage.setItem(k, v));
+}
+
+function mergeUniqueObjects(existingArr, importedArr) {
+  const seen = new Set();
+  const out = [];
+  [...existingArr, ...importedArr].forEach(item => {
+    const key = JSON.stringify(item);
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(item);
+    }
+  });
+  return out;
+}
+
+function normalizeImportedDate(value) {
+  if (!value) return '';
+  const s = String(value);
+  return s.slice(0, 10);
+}
+
+function applyImportedData(payload, mode = 'merge') {
+  if (mode === 'replace') clearLocalLogsOnly();
+
+  const importedWeights = Array.isArray(payload.weights) ? payload.weights : [];
+  const importedMeals = payload.dailyMeals || {};
+  const importedSessions = payload.dailySessions || {};
+
+  const currentWeights = getData('weights') || [];
+  const byDate = new Map(currentWeights.map(w => [w.date, w]));
+  importedWeights.forEach(w => {
+    const date = normalizeImportedDate(w.date);
+    if (date) byDate.set(date, { date, val: Number(w.val) || 0 });
+  });
+  const mergedWeights = [...byDate.values()].sort((a, b) => b.date.localeCompare(a.date));
+  setData('weights', mergedWeights);
+
+  Object.entries(importedMeals).forEach(([dateKey, arr]) => {
+    const current = getData('meals_' + dateKey) || [];
+    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
+    setData('meals_' + dateKey, next);
+  });
+
+  Object.entries(importedSessions).forEach(([dateKey, arr]) => {
+    const current = getData('sessions_' + dateKey) || [];
+    const next = mode === 'replace' ? arr : mergeUniqueObjects(current, arr);
+    setData('sessions_' + dateKey, next);
+  });
+}
+
+async function loadFromSheets(mode = 'merge', silent = false) {
+  if (typeof SHEETS_URL === 'undefined' || !SHEETS_URL) {
+    if (!silent) setRestoreStatus('Sheets URL is missing', false);
+    return false;
+  }
+
+  if (!silent) setRestoreStatus('Restoring from Sheets...', true);
+
+  try {
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'loadAll' })
+    });
+
+    const data = await res.json();
+
+    if (!data || !data.success) {
+      if (!silent) setRestoreStatus((data && data.error) ? `Restore failed: ${data.error}` : 'Restore failed', false);
+      return false;
+    }
+
+    applyImportedData(data, mode);
+
+    renderHome();
+    renderWeight();
+    renderFood();
+    renderLift();
+    renderProgress();
+    renderSettings();
+    populateMigrationTool();
+
+    const mealDays = Object.keys(data.dailyMeals || {}).length;
+    const sessionDays = Object.keys(data.dailySessions || {}).length;
+    const weightCount = Array.isArray(data.weights) ? data.weights.length : 0;
+    if (!silent) setRestoreStatus(`Restored ${weightCount} weight day(s), ${mealDays} meal day(s), and ${sessionDays} workout day(s).`, true);
+    return true;
+  } catch (e) {
+    console.error(e);
+    if (!silent) setRestoreStatus('Could not restore from Sheets', false);
+    return false;
+  }
+}
+
+async function autoRestoreIfEmpty() {
+  if (hasAnyLocalLogs()) return;
+  await loadFromSheets('merge', false);
+}
+
+async function init() {
   loadGoalsInputs();
   loadCalcState();
   updateTimeZoneSummary(false);
@@ -3459,6 +3600,7 @@ function init() {
   updateGoalsSummary();
   populateMigrationTool();
   updateTrainingPanel();
+  await autoRestoreIfEmpty();
 }
 
 init();
